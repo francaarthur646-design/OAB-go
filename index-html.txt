@@ -1,0 +1,1267 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<title>Rota OAB — cronograma escuro</title>
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#14201A">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Rota OAB">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" href="icon-192.png">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f6f4ee;
+  --panel:#ffffff;
+  --ink:#1c2b24;
+  --ink-soft:#5b6b62;
+  --line:#dcd7c9;
+  --gold:#a9822e;
+  --gold-soft:#f1e6c8;
+  --green:#2f4a3c;
+  --green-soft:#e4ede6;
+  --red:#8a3a2b;
+  --red-soft:#f3e2dc;
+  --blue:#2f5470;
+  --blue-soft:#e1e9ee;
+  --purple:#5a4a7a;
+  --purple-soft:#eae5f2;
+  --teal:#2a6b6b;
+  --teal-soft:#e0edec;
+  --grey:#6a6458;
+  --grey-soft:#ebe8de;
+  --shadow: 0 2px 10px rgba(28,43,36,0.07);
+  --radius:10px;
+  font-family:'Inter',system-ui,sans-serif;
+}
+:root:not([data-theme="light"]){
+  @media (prefers-color-scheme: dark){
+    --bg:#14201a;
+    --panel:#1c2b24;
+    --ink:#eee9dc;
+    --ink-soft:#a9b7ae;
+    --line:#33453b;
+    --gold:#d8b25a;
+    --gold-soft:#3a3423;
+    --green:#8fbf9f;
+    --green-soft:#22352b;
+    --red:#d99485;
+    --red-soft:#3a2822;
+    --blue:#9bc2dd;
+    --blue-soft:#1f2e38;
+    --purple:#c3b1e0;
+    --purple-soft:#2b2438;
+    --teal:#8fd0cb;
+    --teal-soft:#1c2f2e;
+    --grey:#b7b2a3;
+    --grey-soft:#2a2a22;
+    --shadow: 0 2px 14px rgba(0,0,0,0.35);
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#14201a;
+  --panel:#1c2b24;
+  --ink:#eee9dc;
+  --ink-soft:#a9b7ae;
+  --line:#33453b;
+  --gold:#d8b25a;
+  --gold-soft:#3a3423;
+  --green:#8fbf9f;
+  --green-soft:#22352b;
+  --red:#d99485;
+  --red-soft:#3a2822;
+  --blue:#9bc2dd;
+  --blue-soft:#1f2e38;
+  --purple:#c3b1e0;
+  --purple-soft:#2b2438;
+  --teal:#8fd0cb;
+  --teal-soft:#1c2f2e;
+  --grey:#b7b2a3;
+  --grey-soft:#2a2a22;
+  --shadow: 0 2px 14px rgba(0,0,0,0.35);
+}
+*{box-sizing:border-box;}
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--ink);
+  min-height:100vh;
+  padding:20px 14px 60px;
+}
+.wrap{max-width:920px;margin:0 auto;}
+header{margin-bottom:18px;}
+h1{
+  font-family:'Source Serif 4',serif;
+  font-weight:700;
+  font-size:1.6rem;
+  margin:0 0 4px;
+  letter-spacing:-0.01em;
+}
+.sub{color:var(--ink-soft);font-size:0.92rem;margin:0;}
+
+.progress-card{
+  background:var(--panel);
+  border:1px solid var(--line);
+  border-radius:var(--radius);
+  box-shadow:var(--shadow);
+  padding:16px 18px;
+  margin:16px 0;
+}
+.progress-top{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px;flex-wrap:wrap;gap:6px;}
+.progress-top .n{font-family:'Source Serif 4',serif;font-size:1.5rem;font-weight:600;color:var(--green);}
+.progress-top .label{font-size:0.85rem;color:var(--ink-soft);}
+.bar-track{height:8px;border-radius:5px;background:var(--grey-soft);overflow:hidden;}
+.bar-fill{height:100%;background:var(--green);border-radius:5px;transition:width .3s ease;}
+.discipline-chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px;}
+.chip{
+  font-size:0.72rem;
+  padding:4px 9px;
+  border-radius:20px;
+  border:1px solid var(--line);
+  color:var(--ink-soft);
+  white-space:nowrap;
+}
+
+.controls{
+  display:flex;
+  gap:8px;
+  align-items:center;
+  margin:14px 0 10px;
+  flex-wrap:wrap;
+}
+.controls input[type=text]{
+  flex:1;
+  min-width:140px;
+  padding:9px 12px;
+  border-radius:8px;
+  border:1px solid var(--line);
+  background:var(--panel);
+  color:var(--ink);
+  font-size:0.9rem;
+}
+.controls select{
+  padding:9px 10px;
+  border-radius:8px;
+  border:1px solid var(--line);
+  background:var(--panel);
+  color:var(--ink);
+  font-size:0.85rem;
+}
+.month-nav{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  margin:16px 0 8px;
+}
+.month-nav button{
+  border:1px solid var(--line);
+  background:var(--panel);
+  color:var(--ink);
+  border-radius:8px;
+  width:34px;height:34px;
+  font-size:1rem;
+  cursor:pointer;
+}
+.month-nav button:hover{background:var(--gold-soft);}
+.month-title{font-family:'Source Serif 4',serif;font-weight:600;font-size:1.15rem;}
+
+.calendar{
+  display:grid;
+  grid-template-columns:repeat(7,1fr);
+  gap:4px;
+  background:var(--panel);
+  border:1px solid var(--line);
+  border-radius:var(--radius);
+  padding:10px;
+  box-shadow:var(--shadow);
+}
+.wd{
+  text-align:center;
+  font-size:0.68rem;
+  color:var(--ink-soft);
+  padding-bottom:4px;
+  font-weight:600;
+}
+.day{
+  min-height:58px;
+  border-radius:7px;
+  border:1px solid transparent;
+  padding:5px 4px;
+  cursor:pointer;
+  position:relative;
+  background:transparent;
+}
+.day.empty{cursor:default;}
+.day:not(.empty):hover{background:var(--gold-soft);}
+.day.selected{border-color:var(--gold);background:var(--gold-soft);}
+.day .num{font-size:0.78rem;color:var(--ink-soft);}
+.day.today .num{color:var(--gold);font-weight:700;}
+.dots{display:flex;flex-wrap:wrap;gap:2px;margin-top:4px;}
+.dot{width:6px;height:6px;border-radius:50%;}
+.day .done-badge{
+  position:absolute;top:4px;right:4px;
+  font-size:0.6rem;color:var(--green);
+}
+
+.day-panel{
+  margin-top:16px;
+}
+.day-panel h2{
+  font-family:'Source Serif 4',serif;
+  font-size:1.05rem;
+  margin:0 0 10px;
+}
+.empty-state{
+  color:var(--ink-soft);
+  font-size:0.88rem;
+  padding:20px 4px;
+  text-align:center;
+}
+.event{
+  background:var(--panel);
+  border:1px solid var(--line);
+  border-radius:9px;
+  padding:10px 12px;
+  margin-bottom:8px;
+  display:flex;
+  gap:10px;
+  align-items:flex-start;
+  box-shadow:var(--shadow);
+}
+.event.done{opacity:0.55;}
+.event input[type=checkbox]{
+  margin-top:3px;
+  width:17px;height:17px;
+  accent-color:var(--green);
+  flex-shrink:0;
+  cursor:pointer;
+}
+.event-body{flex:1;min-width:0;}
+.event-title{font-size:0.9rem;font-weight:600;line-height:1.35;}
+.event.done .event-title{text-decoration:line-through;}
+.event-meta{
+  display:flex;flex-wrap:wrap;gap:6px;margin-top:5px;align-items:center;
+}
+.tag{
+  font-size:0.68rem;
+  padding:2px 8px;
+  border-radius:20px;
+  font-weight:600;
+}
+.meta-text{font-size:0.75rem;color:var(--ink-soft);}
+
+.tabs{display:flex;gap:6px;margin:12px 0;flex-wrap:wrap}
+.tabbtn{padding:8px 12px;border:1px solid var(--line);background:var(--panel);color:var(--ink);border-radius:20px;font-size:.85rem;cursor:pointer}
+.tabbtn.on{background:var(--green);color:var(--panel);border-color:var(--green)}
+[hidden]{display:none!important}
+.form{display:grid;gap:8px;background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:12px;margin-bottom:12px}
+.form input,.form select,.form textarea{padding:9px 10px;border-radius:8px;border:1px solid var(--line);background:var(--bg);color:var(--ink);font:inherit;font-size:.9rem;width:100%}
+.btn{padding:9px 14px;border-radius:8px;border:1px solid var(--green);background:var(--green);color:var(--panel);font-size:.85rem;cursor:pointer}
+.row{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0}
+.mini{border:none;background:none;color:var(--ink-soft);cursor:pointer;font-size:1rem}
+.pr{margin:10px 0}.pr .meta-text{display:flex;justify-content:space-between;margin-bottom:4px}
+.opt{display:block;width:100%;text-align:left;padding:8px 10px;margin-top:6px;border:1px solid var(--line);border-radius:8px;background:var(--panel);color:var(--ink);font:inherit;font-size:.85rem;cursor:pointer}
+footer{
+  text-align:center;
+  color:var(--ink-soft);
+  font-size:0.75rem;
+  margin-top:26px;
+}
+
+body{padding-top:calc(20px + env(safe-area-inset-top,0px));padding-bottom:calc(96px + env(safe-area-inset-bottom,0px));}
+.tabs{position:fixed;left:0;right:0;bottom:0;z-index:20;margin:0;gap:4px;flex-wrap:nowrap;background:var(--panel);border-top:1px solid var(--line);padding:6px 6px calc(6px + env(safe-area-inset-bottom,0px));box-shadow:0 -4px 16px rgba(0,0,0,.35)}
+.tabbtn{flex:1;min-width:0;border:none;border-radius:12px;background:transparent;color:var(--ink-soft);padding:8px 2px;font-size:1.25rem;line-height:1.1;text-align:center;min-height:56px}
+.tabbtn span{display:block;font-size:.64rem;margin-top:3px;font-weight:600}
+.tabbtn.on{background:var(--green-soft);color:var(--green);border:none}
+.event{padding:14px 14px}
+.event input[type=checkbox]{width:26px;height:26px;margin-top:0}
+.event-title{font-size:.95rem}
+.btn{min-height:46px;font-size:.92rem;border-radius:10px}
+.resume{background:var(--gold-soft);border:1px solid var(--gold);border-radius:var(--radius);padding:14px 16px;margin:14px 0}
+.resume .k{font-size:.72rem;color:var(--gold);font-weight:700;letter-spacing:.06em;text-transform:uppercase}
+.resume .t{font-size:1rem;font-weight:600;margin:6px 0 4px;line-height:1.35}
+.resume .m{font-size:.8rem;color:var(--ink-soft);margin-bottom:12px}
+.resume .btn{width:100%;background:var(--gold);border-color:var(--gold);color:#14201a;font-weight:700}
+.quick{display:flex;gap:8px;margin:0 0 12px}
+.quick .btn{flex:1;background:var(--panel);color:var(--ink);border-color:var(--line)}
+details.tools{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:12px 14px;margin-top:18px}
+details.tools summary{cursor:pointer;font-weight:600;min-height:32px}
+details.tools .form{border:none;padding:10px 0 0;margin:0}
+details.tools textarea{min-height:90px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>Rota OAB</h1>
+    <p class="sub">Cronograma 1h30–2h por dia · marque o que concluir e continue de onde parou</p>
+  </header>
+
+  <div class="tabs"><button class="tabbtn on" data-t="cron">📅<span>Cronograma</span></button><button class="tabbtn" data-t="erros">📓<span>Erros</span></button><button class="tabbtn" data-t="cards">🗂️<span>Cartões</span></button><button class="tabbtn" data-t="perf">📈<span>Desempenho</span></button><button class="tabbtn" data-t="mat">📁<span>Materiais</span></button></div>
+<div id="tab-cron">
+  <div class="resume" id="resumeCard"></div>
+  <div class="quick"><button class="btn" id="goToday">📍 Ir para hoje</button></div>
+  <div class="progress-card">
+    <div class="progress-top">
+      <span class="n" id="progressPct">0%</span>
+      <span class="label" id="progressLabel">0 de 0 atividades concluídas</span>
+    </div>
+    <div class="bar-track"><div class="bar-fill" id="progressBar" style="width:0%"></div></div>
+    <div class="discipline-chips" id="disciplineChips"></div>
+  </div>
+
+  <div class="controls">
+    <input type="text" id="search" placeholder="Buscar aula, tema ou professor...">
+    <select id="filterDisciplina"></select>
+  </div>
+
+  <div class="month-nav">
+    <button id="prevMonth" aria-label="Mês anterior">‹</button>
+    <div class="month-title" id="monthTitle"></div>
+    <button id="nextMonth" aria-label="Próximo mês">›</button>
+  </div>
+
+  <div class="calendar" id="calendar"></div>
+
+  <div class="day-panel" id="dayPanel">
+    <div class="empty-state">Selecione um dia no calendário para ver as atividades.</div>
+  </div>
+
+  <details class="tools">
+    <summary>⚙️ Progresso e backup</summary>
+    <div class="form">
+      <label class="meta-text" for="upTo">Já estudei tudo até esta data (marca como concluído):</label>
+      <input type="date" id="upTo">
+      <button class="btn" id="markUpTo">Marcar até a data</button>
+      <label class="meta-text" for="bk">Backup (copie o texto e guarde; para restaurar, cole e toque em Restaurar):</label>
+      <textarea id="bk" rows="4"></textarea>
+      <div class="row"><button class="btn" id="bkMake">Gerar backup</button><button class="btn" id="bkLoad">Restaurar</button></div>
+      <div class="meta-text" id="bkMsg"></div>
+    </div>
+  </details>
+  </div>
+<div id="tab-erros" hidden>
+  <div class="form"><select id="mE"></select><input id="tE" type="text" placeholder="Tema da questão (ex.: competência relativa)"><select id="wE"><option>Não sabia</option><option>Confundi conceitos</option><option>Li errado</option><option>Chute</option></select><textarea id="rE" rows="3" placeholder="Regra correta em uma linha"></textarea><button class="btn" id="addE">Adicionar ao caderno</button></div>
+  <div class="controls"><select id="fE"></select></div>
+  <div id="listE"></div>
+</div>
+<div id="tab-cards" hidden>
+  <div class="form"><select id="mC"></select><input id="fC" type="text" placeholder="Frente (pergunta)"><textarea id="vC" rows="2" placeholder="Verso (resposta)"></textarea><button class="btn" id="addC">Criar cartão</button></div>
+  <p class="sub" id="cntC"></p>
+  <div id="revC"></div>
+</div>
+<div id="tab-mat" hidden>
+  <div class="form" id="matSetup">
+    <h3 style="margin:0 0 6px">📁 Materiais de estudo</h3>
+    <label class="meta-text" for="matLink">Cole o link da sua pasta do Google Drive. Ela precisa estar compartilhada como “Qualquer pessoa com o link”.</label>
+    <input type="url" id="matLink" placeholder="https://drive.google.com/drive/folders/…">
+    <button class="btn" id="matSave">Salvar pasta</button>
+    <div class="meta-text" id="matMsg"></div>
+  </div>
+  <div id="matView" hidden>
+    <div class="quick">
+      <a class="btn" id="matOpen" target="_blank" rel="noopener" style="display:flex;align-items:center;justify-content:center;text-decoration:none;background:var(--gold);border-color:var(--gold);color:#14201a;font-weight:700">Abrir no Drive</a>
+      <button class="btn" id="matChange">Trocar pasta</button>
+    </div>
+    <iframe id="matFrame" title="Materiais" style="width:100%;height:68vh;border:1px solid var(--line);border-radius:12px;background:#fff" loading="lazy"></iframe>
+    <div class="meta-text" id="matOff" hidden>Sem internet: os materiais só aparecem online.</div>
+  </div>
+</div>
+<div id="tab-perf" hidden>
+  <div class="form"><select id="mP"></select><input id="nP" type="number" min="1" placeholder="Questões resolvidas"><input id="aP" type="number" min="0" placeholder="Acertos"><button class="btn" id="addP">Registrar</button></div>
+  <div id="listP"></div>
+  <div class="row"><button class="btn" id="undoP">Desfazer último registro</button></div>
+</div>
+  <div id="tab-gen" hidden>
+  <div class="form"><select id="mG"></select><input id="tG" type="text" placeholder="Tema (opcional, ex.: recursos, prescrição)"><select id="nG"><option>3</option><option selected>5</option></select><button class="btn" id="goG" disabled>Gerar questões estilo FGV</button></div>
+  <p class="sub" id="genMsg">Questões geradas por IA no estilo do Exame de Ordem, não são oficiais. Resolva dentro do seu bloco diário de questões e confira o comentário na lei. O resultado entra no Desempenho como “(IA)”, separado das provas reais.</p>
+  <div id="listG"></div>
+</div>
+<footer>Cronograma redistribuído a partir do original — dados de uso pessoal, salvos apenas neste dispositivo — use o backup para não perder o progresso.</footer>
+</div>
+
+<script>
+const EVENTS = [
+{d:"2026-10-27",t:"18:00",dur:"1h",title:"Direito Civil — LINDB: vigência, antinomias e eficácia da lei no tempo e no espaço",disc:"Civil"},
+{d:"2026-10-27",t:"19:10",dur:"30m",title:"Questões de Direito Civil sobre o tema",disc:"Questões"},
+{d:"2026-10-28",t:"18:00",dur:"1h",title:"Direito Civil — Pessoa natural: personalidade, capacidade e incapacidades",disc:"Civil"},
+{d:"2026-10-28",t:"19:10",dur:"30m",title:"Questões de Direito Civil sobre o tema",disc:"Questões"},
+{d:"2026-10-29",t:"18:00",dur:"1h",title:"Direito Civil — Direitos da personalidade, nome e domicílio",disc:"Civil"},
+{d:"2026-10-29",t:"19:10",dur:"30m",title:"Questões de Direito Civil sobre o tema",disc:"Questões"},
+{d:"2026-10-30",t:"18:00",dur:"1h",title:"Direito Civil — Pessoa jurídica: características, desconsideração, associações e fundações",disc:"Civil"},
+{d:"2026-10-30",t:"19:10",dur:"30m",title:"Questões de Direito Civil sobre o tema",disc:"Questões"},
+{d:"2026-10-31",t:"18:00",dur:"1h",title:"Direito Civil — Bens: classificação e bem de família",disc:"Civil"},
+{d:"2026-10-31",t:"19:10",dur:"30m",title:"Questões de Direito Civil sobre o tema",disc:"Questões"},
+{d:"2026-11-01",t:"09:00",dur:"1m",title:"Descanso — sem estudo hoje",disc:"Revisão"},
+{d:"2026-11-02",t:"08:00",dur:"1m",title:"Olá, Ceisquer! Bons estudos nessa jornada até a aprovação",disc:"Metodologia",tipo:"Gravada"},
+{d:"2026-11-02",t:"08:01",dur:"1m",title:"Aproveite tudo o que o Ceisc tem para oferecer a você!",disc:"Metodologia",tipo:"Gravada"},
+{d:"2026-11-02",t:"08:02",dur:"8m",title:"Como iniciar sua preparação para a 1ª fase da OAB",disc:"Metodologia",prof:"Lidiane Fonseca",tipo:"Gravada"},
+{d:"2026-11-02",t:"08:10",dur:"5m",title:"Montando seu ambiente de estudos",disc:"Metodologia",prof:"Lidiane Fonseca",tipo:"Gravada"},
+{d:"2026-11-02",t:"08:15",dur:"2m",title:"Por que é tão importante estudar Ética?",disc:"Metodologia",prof:"Lidiane Fonseca",tipo:"Gravada"},
+{d:"2026-11-02",t:"08:17",dur:"6m",title:"Conheça a plataforma do CEISC",disc:"Metodologia",prof:"Lidiane Fonseca",tipo:"Gravada"},
+{d:"2026-11-02",t:"08:23",dur:"4m",title:"Entendendo os Cronogramas",disc:"Metodologia",prof:"Lidiane Fonseca",tipo:"Gravada"},
+{d:"2026-11-02",t:"08:27",dur:"5m",title:"Cronograma TAQ x cronograma alternativo",disc:"Metodologia",prof:"Lidiane Fonseca",tipo:"Gravada"},
+{d:"2026-11-02",t:"08:32",dur:"4m",title:"Como acessar e utilizar o cronograma de estudos",disc:"Metodologia",prof:"Lidiane Fonseca",tipo:"Gravada"},
+{d:"2026-11-02",t:"08:36",dur:"1m",title:"Como acessar mapas mentais e ebooks de conteúdo",disc:"Metodologia",prof:"Lidiane Fonseca",tipo:"Gravada"},
+{d:"2026-11-02",t:"08:37",dur:"3m",title:"Como utilizar o Banco de Questões",disc:"Metodologia",prof:"Lidiane Fonseca",tipo:"Gravada"},
+{d:"2026-11-02",t:"08:40",dur:"6m",title:"Como revisar os assuntos estudados",disc:"Metodologia",prof:"Lidiane Fonseca",tipo:"Gravada"},
+{d:"2026-11-02",t:"08:46",dur:"6m",title:"Como utilizar o caderno de erros",disc:"Metodologia",prof:"Lidiane Fonseca",tipo:"Gravada"},
+{d:"2026-11-02",t:"08:52",dur:"2m",title:"Melhor forma de resolver simulados autorais",disc:"Metodologia",prof:"Lidiane Fonseca",tipo:"Gravada"},
+{d:"2026-11-02",t:"08:54",dur:"1m",title:"Como utilizar o Pergunte ao Professor",disc:"Metodologia",prof:"Lidiane Fonseca",tipo:"Gravada"},
+{d:"2026-11-02",t:"08:55",dur:"4m",title:"Como recuperar o atraso no cronograma",disc:"Metodologia",prof:"Lidiane Fonseca",tipo:"Gravada"},
+{d:"2026-11-02",t:"08:59",dur:"1m",title:"Como tirar dúvidas ao vivo",disc:"Metodologia",prof:"Lidiane Fonseca",tipo:"Gravada"},
+{d:"2026-11-02",t:"09:00",dur:"10m",title:"Ética | leitura do material",disc:"Ética",tipo:"Gravada"},
+{d:"2026-11-02",t:"09:10",dur:"17m",title:"01.01 Legislação da Ordem dos Advogados ⭐",disc:"Ética",prof:"Leonardo Fetter",tipo:"Gravada"},
+{d:"2026-11-02",t:"09:27",dur:"30m",title:"Resolva questões dos conteúdos de hoje",disc:"Questões"},
+{d:"2026-11-03",t:"08:00",dur:"25m",title:"02.01 Órgãos de gestão OAB ⭐⭐⭐",disc:"Ética",prof:"Leonardo Fetter",tipo:"Gravada"},
+{d:"2026-11-03",t:"08:25",dur:"25m",title:"03.01 Eleições e Mandatos na OAB ⭐",disc:"Ética",prof:"Leonardo Fetter",tipo:"Gravada"},
+{d:"2026-11-03",t:"08:50",dur:"34m",title:"04.01 Inscrição na OAB ⭐⭐",disc:"Ética",prof:"Leonardo Fetter",tipo:"Gravada"},
+{d:"2026-11-03",t:"09:24",dur:"30m",title:"Resolva questões dos conteúdos de hoje",disc:"Questões"},
+{d:"2026-11-04",t:"08:00",dur:"10m",title:"Direito Constitucional | leitura do material",disc:"Constitucional",tipo:"Gravada"},
+{d:"2026-11-04",t:"08:10",dur:"16m",title:"01.01 Poder constituinte originário e derivado ⭐",disc:"Constitucional",prof:"Maria Valentina de Moraes",tipo:"Gravada"},
+{d:"2026-11-04",t:"08:26",dur:"13m",title:"01.02 Eficácia das normas constitucionais ⭐⭐",disc:"Constitucional",prof:"Maria Valentina de Moraes",tipo:"Gravada"},
+{d:"2026-11-04",t:"08:39",dur:"18m",title:"02.01 Neoconstitucionalismo e Princípios fundamentais ⭐⭐",disc:"Constitucional",prof:"Maria Valentina de Moraes",tipo:"Gravada"},
+{d:"2026-11-04",t:"08:57",dur:"12m",title:"03.01 Teoria dos Direitos Fundamentais ⭐",disc:"Constitucional",prof:"Maria Valentina de Moraes",tipo:"Gravada"},
+{d:"2026-11-04",t:"09:09",dur:"13m",title:"03.02 Tratados internacionais de Direitos Humanos ⭐",disc:"Constitucional",prof:"Maria Valentina de Moraes",tipo:"Gravada"},
+{d:"2026-11-04",t:"09:22",dur:"7m",title:"03.03 Vida ⭐",disc:"Constitucional",prof:"Maria Valentina de Moraes",tipo:"Gravada"},
+{d:"2026-11-04",t:"09:29",dur:"7m",title:"03.04 Igualdade ⭐",disc:"Constitucional",prof:"Maria Valentina de Moraes",tipo:"Gravada"},
+{d:"2026-11-04",t:"09:36",dur:"8m",title:"03.05 Liberdade de expressão ⭐",disc:"Constitucional",prof:"Maria Valentina de Moraes",tipo:"Gravada"},
+{d:"2026-11-04",t:"09:44",dur:"16m",title:"Resolva questões dos conteúdos de hoje",disc:"Questões"},
+{d:"2026-11-05",t:"18:00",dur:"1h",title:"Direito Processual Civil — Normas fundamentais do CPC e princípios processuais",disc:"Processo Civil"},
+{d:"2026-11-05",t:"19:10",dur:"30m",title:"Questões de Processo Civil sobre o tema",disc:"Questões"},
+{d:"2026-11-06",t:"18:00",dur:"1h",title:"Direito Civil — Fatos jurídicos: negócio jurídico — elementos e planos",disc:"Civil"},
+{d:"2026-11-06",t:"19:10",dur:"30m",title:"Questões de Direito Civil sobre o tema",disc:"Questões"},
+{d:"2026-11-07",t:"09:00",dur:"1h30",title:"Dia só de questões — banco de questões de Metodologia, Ética, Constitucional, Processo Civil, Civil (revisar cada erro)",disc:"Questões"},
+{d:"2026-11-08",t:"09:00",dur:"1m",title:"Descanso — sem estudo hoje",disc:"Revisão"},
+{d:"2026-11-09",t:"08:00",dur:"16m",title:"03.06 Intimidade, proteção de dados e sigilo ⭐",disc:"Constitucional",prof:"Maria Valentina de Moraes",tipo:"Gravada"},
+{d:"2026-11-09",t:"08:16",dur:"17m",title:"03.07 Liberdade de informação ⭐⭐",disc:"Constitucional",prof:"Maria Valentina de Moraes",tipo:"Gravada"},
+{d:"2026-11-09",t:"08:33",dur:"20m",title:"Direito do Trabalho | leitura do material",disc:"Trabalho",tipo:"Gravada"},
+{d:"2026-11-09",t:"08:53",dur:"16m",title:"01.01 Prescrição trabalhista ⭐⭐",disc:"Trabalho",prof:"Luiz Henrique Menegon Dutra",tipo:"Gravada"},
+{d:"2026-11-09",t:"09:09",dur:"5m",title:"02.01 Fontes e Direito Constitucional do Trabalho ⭐",disc:"Trabalho",prof:"Luiz Henrique Menegon Dutra",tipo:"Gravada"},
+{d:"2026-11-09",t:"09:14",dur:"29m",title:"03.01 Relação de emprego ⭐⭐⭐",disc:"Trabalho",prof:"Luiz Henrique Menegon Dutra",tipo:"Gravada"},
+{d:"2026-11-09",t:"09:43",dur:"17m",title:"Resolva questões dos conteúdos de hoje",disc:"Questões"},
+{d:"2026-11-10",t:"08:00",dur:"15m",title:"04.01 Relação de trabalho, temporário e terceirização ⭐",disc:"Trabalho",prof:"Luiz Henrique Menegon Dutra",tipo:"Gravada"},
+{d:"2026-11-10",t:"08:15",dur:"29m",title:"05.01 Contrato de trabalho: conceito, prazo, intermitente ⭐⭐⭐",disc:"Trabalho",prof:"Luiz Henrique Menegon Dutra",tipo:"Gravada"},
+{d:"2026-11-10",t:"08:44",dur:"29m",title:"05.02 Uniforme, alteração contratual, teletrabalho ⭐⭐⭐",disc:"Trabalho",prof:"Luiz Henrique Menegon Dutra",tipo:"Gravada"},
+{d:"2026-11-10",t:"09:13",dur:"20m",title:"Direito Tributário | leitura do material",disc:"Tributário",tipo:"Gravada"},
+{d:"2026-11-10",t:"09:33",dur:"8m",title:"01.01 Introdução e Conceito de Tributo ⭐",disc:"Tributário",prof:"Guilherme Pedrozo da Silva",tipo:"Gravada"},
+{d:"2026-11-10",t:"09:41",dur:"19m",title:"Resolva questões dos conteúdos de hoje",disc:"Questões"},
+{d:"2026-11-11",t:"18:00",dur:"1h",title:"Direito Processual Civil — Jurisdição e competência: absoluta e relativa",disc:"Processo Civil"},
+{d:"2026-11-11",t:"19:10",dur:"30m",title:"Questões de Processo Civil sobre o tema",disc:"Questões"},
+{d:"2026-11-12",t:"18:00",dur:"1h",title:"Direito Civil — Defeitos do negócio jurídico e invalidade (nulidade e anulabilidade)",disc:"Civil"},
+{d:"2026-11-12",t:"19:10",dur:"30m",title:"Questões de Direito Civil sobre o tema",disc:"Questões"},
+{d:"2026-11-13",t:"08:00",dur:"9m",title:"02.01 Competência para Instituir Tributos ⭐⭐",disc:"Tributário",prof:"Guilherme Pedrozo da Silva",tipo:"Gravada"},
+{d:"2026-11-13",t:"08:09",dur:"5m",title:"02.02 Características da Competência Tributária ⭐",disc:"Tributário",prof:"Guilherme Pedrozo da Silva",tipo:"Gravada"},
+{d:"2026-11-13",t:"08:14",dur:"5m",title:"02.03 Competência para Normas Gerais ⭐",disc:"Tributário",prof:"Guilherme Pedrozo da Silva",tipo:"Gravada"},
+{d:"2026-11-13",t:"08:19",dur:"30m",title:"03.01 Impostos: Aspectos Gerais ⭐⭐⭐",disc:"Tributário",prof:"Rafael Novais",tipo:"Gravada"},
+{d:"2026-11-13",t:"08:49",dur:"29m",title:"04.01 Taxas de Serviço e de Poder de Polícia ⭐",disc:"Tributário",prof:"Rafael Novais",tipo:"Gravada"},
+{d:"2026-11-13",t:"09:18",dur:"26m",title:"05.01 Contribuições de Melhoria ⭐",disc:"Tributário",prof:"Rafael Novais",tipo:"Gravada"},
+{d:"2026-11-13",t:"09:44",dur:"16m",title:"Resolva questões dos conteúdos de hoje",disc:"Questões"},
+{d:"2026-11-14",t:"08:00",dur:"15m",title:"06.01 Empréstimos Compulsórios ⭐⭐",disc:"Tributário",prof:"Rafael Novais",tipo:"Gravada"},
+{d:"2026-11-14",t:"08:15",dur:"14m",title:"07.01 Contribuições Especiais ⭐⭐⭐",disc:"Tributário",prof:"Rafael Novais",tipo:"Gravada"},
+{d:"2026-11-14",t:"08:29",dur:"13m",title:"08.01 Princípio da Legalidade ⭐",disc:"Tributário",prof:"Guilherme Pedrozo da Silva",tipo:"Gravada"},
+{d:"2026-11-14",t:"08:42",dur:"10m",title:"Direito Penal | leitura do material",disc:"Penal",tipo:"Gravada"},
+{d:"2026-11-14",t:"08:52",dur:"25m",title:"01.01 Lei Penal no Tempo, temporária, tempo do crime ⭐⭐⭐",disc:"Penal",prof:"Nidal Ahmad",tipo:"Gravada"},
+{d:"2026-11-14",t:"09:17",dur:"30m",title:"Resolva questões dos conteúdos de hoje",disc:"Questões"},
+{d:"2026-11-15",t:"09:00",dur:"1m",title:"Descanso — sem estudo hoje",disc:"Revisão"},
+{d:"2026-11-16",t:"18:00",dur:"1h",title:"Direito Processual Civil — Modificação de competência, conexão, continência e conflito de competência",disc:"Processo Civil"},
+{d:"2026-11-16",t:"19:10",dur:"30m",title:"Questões de Processo Civil sobre o tema",disc:"Questões"},
+{d:"2026-11-17",t:"18:00",dur:"1h",title:"Direito Civil — Prescrição e decadência",disc:"Civil"},
+{d:"2026-11-17",t:"19:10",dur:"30m",title:"Questões de Direito Civil sobre o tema",disc:"Questões"},
+{d:"2026-11-18",t:"08:00",dur:"34m",title:"01.02 Territorialidade, extraterritorialidade, lugar do crime ⭐⭐⭐",disc:"Penal",prof:"Nidal Ahmad",tipo:"Gravada"},
+{d:"2026-11-18",t:"08:34",dur:"28m",title:"01.03 Conflito aparente de normas ⭐⭐⭐",disc:"Penal",prof:"Nidal Ahmad",tipo:"Gravada"},
+{d:"2026-11-18",t:"09:02",dur:"22m",title:"02.01 Relação de causalidade / nexo causal ⭐⭐⭐",disc:"Penal",prof:"Nidal Ahmad",tipo:"Gravada"},
+{d:"2026-11-18",t:"09:24",dur:"16m",title:"02.02 Crimes Omissivos ⭐",disc:"Penal",prof:"Nidal Ahmad",tipo:"Gravada"},
+{d:"2026-11-18",t:"09:40",dur:"20m",title:"Resolva questões dos conteúdos de hoje",disc:"Questões"},
+{d:"2026-11-19",t:"08:00",dur:"20m",title:"Processo Penal | leitura do material",disc:"Processo Penal",tipo:"Gravada"},
+{d:"2026-11-19",t:"08:20",dur:"19m",title:"01.01 Princípios fundamentais do direito processual penal ⭐⭐",disc:"Processo Penal",prof:"Mauro Stürmer",tipo:"Gravada"},
+{d:"2026-11-19",t:"08:39",dur:"11m",title:"02.01 Aplicação da Lei Processual Penal ⭐",disc:"Processo Penal",prof:"Mauro Stürmer",tipo:"Gravada"},
+{d:"2026-11-19",t:"08:50",dur:"26m",title:"03.01 Inquérito Policial ⭐⭐⭐",disc:"Processo Penal",prof:"Mauro Stürmer",tipo:"Gravada"},
+{d:"2026-11-19",t:"09:16",dur:"16m",title:"04.01 Acordo de não persecução penal (ANPP) ⭐⭐",disc:"Processo Penal",prof:"Mauro Stürmer",tipo:"Gravada"},
+{d:"2026-11-19",t:"09:32",dur:"28m",title:"Resolva questões dos conteúdos de hoje",disc:"Questões"},
+{d:"2026-11-20",t:"18:00",dur:"1h",title:"Direito Processual Civil — Ação, condições da ação e pressupostos processuais",disc:"Processo Civil"},
+{d:"2026-11-20",t:"19:10",dur:"30m",title:"Questões de Processo Civil sobre o tema",disc:"Questões"},
+{d:"2026-11-21",t:"18:00",dur:"1h",title:"Direito Civil — Obrigações: modalidades (dar, fazer, não fazer, alternativas, solidariedade)",disc:"Civil"},
+{d:"2026-11-21",t:"19:10",dur:"30m",title:"Questões de Direito Civil sobre o tema",disc:"Questões"},
+{d:"2026-11-22",t:"09:00",dur:"1m",title:"Descanso — sem estudo hoje",disc:"Revisão"},
+{d:"2026-11-23",t:"08:00",dur:"22m",title:"05.01 Ação Penal ⭐⭐⭐",disc:"Processo Penal",prof:"Mauro Stürmer",tipo:"Gravada"},
+{d:"2026-11-23",t:"08:22",dur:"10m",title:"Direito Constitucional | leitura do material",disc:"Constitucional",tipo:"Gravada"},
+{d:"2026-11-23",t:"08:32",dur:"13m",title:"03.08 Liberdade religiosa ⭐⭐⭐",disc:"Constitucional",prof:"Maria Valentina de Moraes",tipo:"Gravada"},
+{d:"2026-11-23",t:"08:45",dur:"11m",title:"03.09 Liberdade de reunião e associação ⭐⭐",disc:"Constitucional",prof:"Maria Valentina de Moraes",tipo:"Gravada"},
+{d:"2026-11-23",t:"08:56",dur:"10m",title:"03.11 Proteção ao domicílio ⭐⭐⭐",disc:"Constitucional",prof:"Maria Valentina de Moraes",tipo:"Gravada"},
+{d:"2026-11-23",t:"09:06",dur:"11m",title:"03.12 Propriedade ⭐",disc:"Constitucional",prof:"Maria Valentina de Moraes",tipo:"Gravada"},
+{d:"2026-11-23",t:"09:17",dur:"30m",title:"Resolva questões dos conteúdos de hoje",disc:"Questões"},
+{d:"2026-11-24",t:"08:00",dur:"33m",title:"04.01 Natos, naturalizados e aquisição de nacionalidade ⭐",disc:"Constitucional",prof:"Thiago Giovani Romero",tipo:"Gravada"},
+{d:"2026-11-24",t:"08:33",dur:"15m",title:"04.02 Distinções entre natos e naturalizados ⭐⭐",disc:"Constitucional",prof:"Thiago Giovani Romero",tipo:"Gravada"},
+{d:"2026-11-24",t:"08:48",dur:"9m",title:"04.03 Perda da Nacionalidade ⭐",disc:"Constitucional",prof:"Thiago Giovani Romero",tipo:"Gravada"},
+{d:"2026-11-24",t:"08:57",dur:"18m",title:"05.01 Voto, sujeitos ativos e passivos ⭐",disc:"Constitucional",prof:"Franciele Letícia Kühl",tipo:"Gravada"},
+{d:"2026-11-24",t:"09:15",dur:"30m",title:"Resolva questões dos conteúdos de hoje",disc:"Questões"},
+{d:"2026-11-25",t:"18:00",dur:"1h",title:"Direito Civil — Transmissão das obrigações: cessão de crédito e assunção de dívida",disc:"Civil"},
+{d:"2026-11-25",t:"19:10",dur:"30m",title:"Questões de Direito Civil sobre o tema",disc:"Questões"},
+{d:"2026-11-26",t:"18:00",dur:"1h",title:"Direito Processual Civil — Partes, capacidade processual, litisconsórcio e sucessão",disc:"Processo Civil"},
+{d:"2026-11-26",t:"19:10",dur:"30m",title:"Questões de Processo Civil sobre o tema",disc:"Questões"},
+{d:"2026-11-27",t:"08:00",dur:"10m",title:"Direito Penal | leitura do material",disc:"Penal",tipo:"Gravada"},
+{d:"2026-11-27",t:"08:10",dur:"13m",title:"02.03 Iter criminis, tentativa, desistência voluntária ⭐⭐⭐",disc:"Penal",prof:"Nidal Ahmad",tipo:"Gravada"},
+{d:"2026-11-27",t:"08:23",dur:"15m",title:"02.04 Arrependimento posterior e crime impossível ⭐",disc:"Penal",prof:"Nidal Ahmad",tipo:"Gravada"},
+{d:"2026-11-27",t:"08:38",dur:"25m",title:"02.05 Erro de tipo essencial e erro de proibição ⭐⭐⭐",disc:"Penal",prof:"Nidal Ahmad",tipo:"Gravada"},
+{d:"2026-11-27",t:"09:03",dur:"24m",title:"02.06 Crime doloso e culposo ⭐",disc:"Penal",prof:"Nidal Ahmad",tipo:"Gravada"},
+{d:"2026-11-27",t:"09:27",dur:"30m",title:"Resolva questões dos conteúdos de hoje",disc:"Questões"},
+{d:"2026-11-28",t:"09:00",dur:"45m",title:"Revisão da semana: mapas mentais e releitura de Processo Penal, Constitucional, Civil, Processo Civil, Penal",disc:"Revisão"},
+{d:"2026-11-28",t:"09:50",dur:"45m",title:"Questões dos temas da semana + caderno de erros",disc:"Questões"},
+{d:"2026-11-29",t:"09:00",dur:"1m",title:"Descanso — sem estudo hoje",disc:"Revisão"},
+{d:"2026-11-30",t:"08:00",dur:"27m",title:"02.07 Erro de tipo acidental ⭐",disc:"Penal",prof:"Nidal Ahmad",tipo:"Gravada"},
+{d:"2026-11-30",t:"08:27",dur:"13m",title:"02.08 Descriminantes putativas ⭐",disc:"Penal",prof:"Nidal Ahmad",tipo:"Gravada"},
+{d:"2026-11-30",t:"08:40",dur:"11m",title:"02.09 Coação moral irresistível e obediência hierárquica ⭐",disc:"Penal",prof:"Nidal Ahmad",tipo:"Gravada"},
+{d:"2026-11-30",t:"08:51",dur:"37m",title:"02.10 Excludentes de ilicitude ⭐⭐⭐",disc:"Penal",prof:"Nidal Ahmad",tipo:"Gravada"},
+{d:"2026-11-30",t:"09:28",dur:"30m",title:"Resolva questões dos conteúdos de hoje",disc:"Questões"},
+{d:"2026-12-01",t:"08:00",dur:"20m",title:"Processo do Trabalho | leitura do material",disc:"Processo do Trabalho",tipo:"Gravada"},
+{d:"2026-12-01",t:"08:20",dur:"6m",title:"01.01 Teoria geral do Processo do Trabalho ⭐",disc:"Processo do Trabalho",prof:"Cleize Kohls",tipo:"Gravada"},
+{d:"2026-12-01",t:"08:26",dur:"15m",title:"02.01 Organização da Justiça do Trabalho e MPT ⭐",disc:"Processo do Trabalho",prof:"Cleize Kohls",tipo:"Gravada"},
+{d:"2026-12-01",t:"08:41",dur:"11m",title:"02.02 Competência Territorial ⭐",disc:"Processo do Trabalho",prof:"Cleize Kohls",tipo:"Gravada"},
+{d:"2026-12-01",t:"08:52",dur:"31m",title:"02.03 Competência da Justiça do Trabalho ⭐⭐",disc:"Processo do Trabalho",prof:"Cleize Kohls",tipo:"Gravada"},
+{d:"2026-12-01",t:"09:23",dur:"16m",title:"03.01 Partes, procuradores e honorários de sucumbência ⭐",disc:"Processo do Trabalho",prof:"Cleize Kohls",tipo:"Gravada"},
+{d:"2026-12-01",t:"09:39",dur:"21m",title:"Resolva questões dos conteúdos de hoje",disc:"Questões"},
+{d:"2026-12-02",t:"18:00",dur:"1h",title:"Direito Processual Civil — Intervenção de terceiros: assistência, denunciação da lide, chamamento ao processo, IDPJ e amicus curiae",disc:"Processo Civil"},
+{d:"2026-12-02",t:"19:10",dur:"30m",title:"Questões de Processo Civil sobre o tema",disc:"Questões"},
+{d:"2026-12-03",t:"18:00",dur:"1h",title:"Direito Civil — Adimplemento e extinção: pagamento, consignação, compensação, novação",disc:"Civil"},
+{d:"2026-12-03",t:"19:10",dur:"30m",title:"Questões de Direito Civil sobre o tema",disc:"Questões"},
+{d:"2026-12-04",t:"08:00",dur:"15m",title:"03.02 Custas processuais e Justiça Gratuita ⭐⭐",disc:"Processo do Trabalho",prof:"Cleize Kohls",tipo:"Gravada"},
+{d:"2026-12-04",t:"08:15",dur:"17m",title:"04.01 Atos, prazos e nulidades ⭐⭐⭐",disc:"Processo do Trabalho",prof:"Cleize Kohls",tipo:"Gravada"},
+{d:"2026-12-04",t:"08:32",dur:"20m",title:"Direito Tributário | leitura do material",disc:"Tributário",tipo:"Gravada"},
+{d:"2026-12-04",t:"08:52",dur:"13m",title:"08.02 Princípio da Irretroatividade ⭐⭐⭐",disc:"Tributário",prof:"Guilherme Pedrozo da Silva",tipo:"Gravada"},
+{d:"2026-12-04",t:"09:05",dur:"14m",title:"08.03 Princípio da Anterioridade ⭐⭐⭐",disc:"Tributário",prof:"Guilherme Pedrozo da Silva",tipo:"Gravada"},
+{d:"2026-12-04",t:"09:19",dur:"15m",title:"08.04 Não confisco, liberdade de tráfego e outros princípios ⭐",disc:"Tributário",prof:"Guilherme Pedrozo da Silva",tipo:"Gravada"},
+{d:"2026-12-04",t:"09:34",dur:"3m",title:"08.05 Novos princípios — Reforma Tributária ⭐",disc:"Tributário",prof:"Guilherme Pedrozo da Silva",tipo:"Gravada"},
+{d:"2026-12-04",t:"09:37",dur:"23m",title:"Resolva questões dos conteúdos de hoje",disc:"Questões"},
+{d:"2026-12-05",t:"08:00",dur:"12m",title:"09.01 Imunidades — introdução e recíproca ⭐",disc:"Tributário",prof:"Guilherme Pedrozo da Silva",tipo:"Gravada"},
+{d:"2026-12-05",t:"08:12",dur:"6m",title:"09.02 Imunidade genérica: templos e entidades religiosas ⭐⭐",disc:"Tributário",prof:"Guilherme Pedrozo da Silva",tipo:"Gravada"},
+{d:"2026-12-05",t:"08:18",dur:"8m",title:"09.03 Imunidade genérica subjetiva ⭐",disc:"Tributário",prof:"Guilherme Pedrozo da Silva",tipo:"Gravada"},
+{d:"2026-12-05",t:"08:26",dur:"6m",title:"09.04 Imunidade genérica objetiva ⭐",disc:"Tributário",prof:"Guilherme Pedrozo da Silva",tipo:"Gravada"},
+{d:"2026-12-05",t:"08:32",dur:"14m",title:"10.01 Legislação Tributária ⭐⭐",disc:"Tributário",prof:"Rafael Novais",tipo:"Gravada"},
+{d:"2026-12-05",t:"08:46",dur:"8m",title:"11.01 Obrigações Tributárias e fato gerador ⭐⭐",disc:"Tributário",prof:"Rafael Novais",tipo:"Gravada"},
+{d:"2026-12-05",t:"08:54",dur:"11m",title:"11.02 Sujeitos da Relação Tributária ⭐⭐",disc:"Tributário",prof:"Rafael Novais",tipo:"Gravada"},
+{d:"2026-12-05",t:"09:05",dur:"13m",title:"11.03 Solidariedade Tributária ⭐",disc:"Tributário",prof:"Rafael Novais",tipo:"Gravada"},
+{d:"2026-12-05",t:"09:18",dur:"12m",title:"11.04 Capacidade Passiva e Domicílio Tributário ⭐",disc:"Tributário",prof:"Rafael Novais",tipo:"Gravada"},
+{d:"2026-12-05",t:"09:30",dur:"14m",title:"12.01 Constituição do Crédito Tributário ⭐",disc:"Tributário",prof:"Rafael Novais",tipo:"Gravada"},
+{d:"2026-12-05",t:"09:44",dur:"16m",title:"Resolva questões dos conteúdos de hoje",disc:"Questões"},
+{d:"2026-12-06",t:"09:00",dur:"1m",title:"Descanso — sem estudo hoje",disc:"Revisão"},
+{d:"2026-12-07",t:"18:00",dur:"1h",title:"Direito Processual Civil — Juiz, Ministério Público, Advocacia, Defensoria e deveres das partes (litigância de má-fé)",disc:"Processo Civil"},
+{d:"2026-12-07",t:"19:10",dur:"30m",title:"Questões de Processo Civil sobre o tema",disc:"Questões"},
+{d:"2026-12-08",t:"18:00",dur:"1h",title:"Direito Civil — Inadimplemento: mora, perdas e danos, cláusula penal e arras",disc:"Civil"},
+{d:"2026-12-08",t:"19:10",dur:"30m",title:"Questões de Direito Civil sobre o tema",disc:"Questões"},
+{d:"2026-12-09",t:"08:00",dur:"20m",title:"Processo Penal | leitura do material",disc:"Processo Penal",tipo:"Gravada"},
+{d:"2026-12-09",t:"08:20",dur:"34m",title:"06.01 Jurisdição e Competência ⭐⭐⭐",disc:"Processo Penal",prof:"Mauro Stürmer",tipo:"Gravada"},
+{d:"2026-12-09",t:"08:54",dur:"31m",title:"07.01 Provas ⭐⭐⭐",disc:"Processo Penal",prof:"Mauro Stürmer",tipo:"Gravada"},
+{d:"2026-12-09",t:"09:25",dur:"30m",title:"Resolva questões dos conteúdos de hoje",disc:"Questões"},
+{d:"2026-12-10",t:"08:00",dur:"10m",title:"Ética | leitura do material",disc:"Ética",tipo:"Gravada"},
+{d:"2026-12-10",t:"08:10",dur:"21m",title:"05.01 Licenciamento e Cancelamento da Inscrição ⭐",disc:"Ética",prof:"Leonardo Fetter",tipo:"Gravada"},
+{d:"2026-12-10",t:"08:31",dur:"21m",title:"06.01 Estagiário ⭐",disc:"Ética",prof:"Leonardo Fetter",tipo:"Gravada"},
+{d:"2026-12-10",t:"08:52",dur:"21m",title:"07.01 Advogado Empregado ⭐⭐",disc:"Ética",prof:"Leonardo Fetter",tipo:"Gravada"},
+{d:"2026-12-10",t:"09:13",dur:"30m",title:"Resolva questões dos conteúdos de hoje",disc:"Questões"},
+{d:"2026-12-11",t:"18:00",dur:"1h",title:"Direito Civil — Contratos: teoria geral e princípios",disc:"Civil"},
+{d:"2026-12-11",t:"19:10",dur:"30m",title:"Questões de Direito Civil sobre o tema",disc:"Questões"},
+{d:"2026-12-12",t:"18:00",dur:"1h",title:"Direito Processual Civil — Atos processuais, prazos e comunicação: citação, intimação e carta",disc:"Processo Civil"},
+{d:"2026-12-12",t:"19:10",dur:"30m",title:"Questões de Processo Civil sobre o tema",disc:"Questões"},
+{d:"2026-12-13",t:"13:00",dur:"5h",title:"Simulado Autoral Ceisc 01",disc:"Simulado"},
+{d:"2026-12-13",t:"19:30",dur:"30m",title:"Corrigir o simulado e anotar erros no caderno",disc:"Revisão"},
+{d:"2026-12-14",t:"08:00",dur:"35m",title:"08.01 Atividades Privativas do Advogado ⭐⭐",disc:"Ética",prof:"Leonardo Fetter",tipo:"Gravada"},
+{d:"2026-12-14",t:"08:35",dur:"10m",title:"Direito Constitucional | leitura do material",disc:"Constitucional",tipo:"Gravada"},
+{d:"2026-12-14",t:"08:45",dur:"28m",title:"05.02 Inelegibilidades (art. 14 CF) ⭐⭐",disc:"Constitucional",prof:"Franciele Letícia Kühl",tipo:"Gravada"},
+{d:"2026-12-14",t:"09:13",dur:"10m",title:"05.03 Privação dos Direitos Políticos ⭐",disc:"Constitucional",prof:"Franciele Letícia Kühl",tipo:"Gravada"},
+{d:"2026-12-14",t:"09:23",dur:"6m",title:"05.04 Princípio da Anterioridade Eleitoral ⭐",disc:"Constitucional",prof:"Franciele Letícia Kühl",tipo:"Gravada"},
+{d:"2026-12-14",t:"09:29",dur:"30m",title:"Resolva questões dos conteúdos de hoje",disc:"Questões"},
+{d:"2026-12-15",t:"08:00",dur:"19m",title:"05.05 Partidos Políticos ⭐",disc:"Constitucional",prof:"Franciele Letícia Kühl",tipo:"Gravada"},
+{d:"2026-12-15",t:"08:19",dur:"30m",title:"06.01 Federalismo e autonomia dos entes ⭐⭐⭐",disc:"Constitucional",prof:"Franciele Letícia Kühl",tipo:"Gravada"},
+{d:"2026-12-15",t:"08:49",dur:"17m",title:"06.02 Alteração das estruturas territoriais ⭐⭐",disc:"Constitucional",prof:"Franciele Letícia Kühl",tipo:"Gravada"},
+{d:"2026-12-15",t:"09:06",dur:"10m",title:"Direito Penal | leitura do material",disc:"Penal",tipo:"Gravada"},
+{d:"2026-12-15",t:"09:16",dur:"20m",title:"03.01 Imputabilidade penal ⭐⭐",disc:"Penal",prof:"Nidal Ahmad",tipo:"Gravada"},
+{d:"2026-12-15",t:"09:36",dur:"24m",title:"Resolva questões dos conteúdos de hoje",disc:"Questões"},
+{d:"2026-12-16",t:"18:00",dur:"1h",title:"Direito Civil — Contratos: formação, vícios redibitórios, evicção e extinção",disc:"Civil"},
+{d:"2026-12-16",t:"19:10",dur:"30m",title:"Questões de Direito Civil sobre o tema",disc:"Questões"},
+{d:"2026-12-17",t:"18:00",dur:"1h",title:"Direito Processual Civil — Tutela provisória: urgência (antecipada e cautelar) e evidência",disc:"Processo Civil"},
+{d:"2026-12-17",t:"19:10",dur:"30m",title:"Questões de Processo Civil sobre o tema",disc:"Questões"},
+{d:"2026-12-18",t:"08:00",dur:"35m",title:"04.01 Concurso de Pessoas ⭐⭐⭐",disc:"Penal",prof:"Nidal Ahmad",tipo:"Gravada"},
+{d:"2026-12-18",t:"08:35",dur:"13m",title:"05.01 Aplicação da pena: Regime Inicial ⭐",disc:"Penal",prof:"Nidal Ahmad",tipo:"Gravada"},
+{d:"2026-12-18",t:"08:48",dur:"12m",title:"05.02 Penas restritivas de direitos ⭐⭐",disc:"Penal",prof:"Nidal Ahmad",tipo:"Gravada"},
+{d:"2026-12-18",t:"09:00",dur:"22m",title:"05.03 Sistema trifásico, agravantes e atenuantes ⭐",disc:"Penal",prof:"Nidal Ahmad",tipo:"Gravada"},
+{d:"2026-12-18",t:"09:22",dur:"12m",title:"05.04 Pena de multa ⭐",disc:"Penal",prof:"Nidal Ahmad",tipo:"Gravada"},
+{d:"2026-12-18",t:"09:34",dur:"26m",title:"Resolva questões dos conteúdos de hoje",disc:"Questões"},
+{d:"2026-12-19",t:"09:00",dur:"1h30",title:"Dia só de questões — banco de questões de Ética, Constitucional, Penal, Civil, Processo Civil (revisar cada erro)",disc:"Questões"},
+{d:"2026-12-20",t:"09:00",dur:"1m",title:"Descanso — sem estudo hoje",disc:"Revisão"},
+{d:"2026-12-21",t:"08:00",dur:"28m",title:"05.05 Reincidência ⭐⭐",disc:"Penal",prof:"Nidal Ahmad",tipo:"Gravada"},
+{d:"2026-12-21",t:"08:28",dur:"20m",title:"Direito do Trabalho | leitura do material",disc:"Trabalho",tipo:"Gravada"},
+{d:"2026-12-21",t:"08:48",dur:"25m",title:"05.03 Interrupção e suspensão do contrato de trabalho ⭐⭐⭐",disc:"Trabalho",prof:"Luiz Henrique Menegon Dutra",tipo:"Gravada"},
+{d:"2026-12-21",t:"09:13",dur:"19m",title:"05.04 Cláusula de arbitragem e teletrabalho ⭐",disc:"Trabalho",prof:"Luiz Henrique Menegon Dutra",tipo:"Gravada"},
+{d:"2026-12-21",t:"09:32",dur:"28m",title:"Resolva questões dos conteúdos de hoje",disc:"Questões"},
+{d:"2026-12-22",t:"18:00",dur:"1h",title:"Direito Civil — Compra e venda, troca e doação",disc:"Civil"},
+{d:"2026-12-22",t:"19:10",dur:"30m",title:"Questões de Direito Civil sobre o tema",disc:"Questões"},
+{d:"2026-12-23",t:"18:00",dur:"1h",title:"Direito Processual Civil — Petição inicial, emenda, indeferimento e improcedência liminar do pedido",disc:"Processo Civil"},
+{d:"2026-12-23",t:"19:10",dur:"30m",title:"Questões de Processo Civil sobre o tema",disc:"Questões"},
+{d:"2026-12-24",t:"08:00",dur:"21m",title:"06.01 Jornada de trabalho ⭐⭐⭐",disc:"Trabalho",prof:"Luiz Henrique Menegon Dutra",tipo:"Gravada"},
+{d:"2026-12-24",t:"08:21",dur:"29m",title:"06.02 Jornada de trabalho: Horas Extras ⭐⭐⭐",disc:"Trabalho",prof:"Luiz Henrique Menegon Dutra",tipo:"Gravada"},
+{d:"2026-12-24",t:"08:50",dur:"29m",title:"06.03 Jornada de trabalho: Hora Noturna ⭐",disc:"Trabalho",prof:"Luiz Henrique Menegon Dutra",tipo:"Gravada"},
+{d:"2026-12-24",t:"09:19",dur:"30m",title:"Resolva questões dos conteúdos de hoje",disc:"Questões"},
+{d:"2026-12-25",t:"08:00",dur:"20m",title:"Direito Tributário | leitura do material",disc:"Tributário",tipo:"Gravada"},
+{d:"2026-12-25",t:"08:20",dur:"15m",title:"13.01 Suspensão da exigibilidade: moratória ⭐",disc:"Tributário",prof:"Rafael Novais",tipo:"Gravada"},
+{d:"2026-12-25",t:"08:35",dur:"8m",title:"13.02 Depósito e Recurso Administrativo ⭐",disc:"Tributário",prof:"Rafael Novais",tipo:"Gravada"},
+{d:"2026-12-25",t:"08:43",dur:"7m",title:"13.03 Liminar e Tutela Provisória ⭐",disc:"Tributário",prof:"Rafael Novais",tipo:"Gravada"},
+{d:"2026-12-25",t:"08:50",dur:"6m",title:"13.04 Parcelamento ⭐",disc:"Tributário",prof:"Rafael Novais",tipo:"Gravada"},
+{d:"2026-12-25",t:"08:56",dur:"12m",title:"14.01 Extinção do Crédito Tributário e Pagamento ⭐",disc:"Tributário",prof:"Rafael Novais",tipo:"Gravada"},
+{d:"2026-12-25",t:"09:08",dur:"6m",title:"14.02 Compensação ⭐",disc:"Tributário",prof:"Rafael Novais",tipo:"Gravada"},
+{d:"2026-12-25",t:"09:14",dur:"5m",title:"14.03 Transação e Remissão ⭐",disc:"Tributário",prof:"Rafael Novais",tipo:"Gravada"},
+{d:"2026-12-25",t:"09:19",dur:"12m",title:"14.04 Prescrição e Decadência ⭐⭐⭐",disc:"Tributário",prof:"Rafael Novais",tipo:"Gravada"},
+{d:"2026-12-25",t:"09:31",dur:"4m",title:"14.05 Demais formas de extinção do crédito ⭐",disc:"Tributário",prof:"Rafael Novais",tipo:"Gravada"},
+{d:"2026-12-25",t:"09:35",dur:"9m",title:"15.01 Isenção Tributária ⭐⭐",disc:"Tributário",prof:"Rafael Novais",tipo:"Gravada"},
+{d:"2026-12-25",t:"09:44",dur:"16m",title:"Resolva questões dos conteúdos de hoje",disc:"Questões"},
+{d:"2026-12-26",t:"08:00",dur:"4m",title:"15.02 Anistia Tributária ⭐",disc:"Tributário",prof:"Rafael Novais",tipo:"Gravada"},
+{d:"2026-12-26",t:"08:04",dur:"17m",title:"16.01 Garantias do Crédito Tributário ⭐",disc:"Tributário",prof:"Guilherme Pedrozo da Silva",tipo:"Gravada"},
+{d:"2026-12-26",t:"08:21",dur:"12m",title:"16.02 Privilégios do Crédito Tributário ⭐",disc:"Tributário",prof:"Guilherme Pedrozo da Silva",tipo:"Gravada"},
+{d:"2026-12-26",t:"08:33",dur:"10m",title:"17.01 Responsabilidade: adquirente de imóvel/móvel ⭐",disc:"Tributário",prof:"Guilherme Pedrozo da Silva",tipo:"Gravada"},
+{d:"2026-12-26",t:"08:43",dur:"3m",title:"17.02 Responsabilidade dos Sucessores ⭐",disc:"Tributário",prof:"Guilherme Pedrozo da Silva",tipo:"Gravada"},
+{d:"2026-12-26",t:"08:46",dur:"9m",title:"17.03 Responsabilidade nas Operações Societárias ⭐",disc:"Tributário",prof:"Guilherme Pedrozo da Silva",tipo:"Gravada"},
+{d:"2026-12-26",t:"08:55",dur:"20m",title:"Processo Penal | leitura do material",disc:"Processo Penal",tipo:"Gravada"},
+{d:"2026-12-26",t:"09:15",dur:"22m",title:"08.01 Comunicação dos atos processuais ⭐",disc:"Processo Penal",prof:"Mauro Stürmer",tipo:"Gravada"},
+{d:"2026-12-26",t:"09:37",dur:"23m",title:"Resolva questões dos conteúdos de hoje",disc:"Questões"},
+{d:"2026-12-27",t:"09:00",dur:"1m",title:"Descanso — sem estudo hoje",disc:"Revisão"},
+{d:"2026-12-28",t:"18:00",dur:"1h",title:"Direito Civil — Locação, comodato e mútuo",disc:"Civil"},
+{d:"2026-12-28",t:"19:10",dur:"30m",title:"Questões de Direito Civil sobre o tema",disc:"Questões"},
+{d:"2026-12-29",t:"18:00",dur:"1h",title:"Direito Processual Civil — Audiência de conciliação/mediação, contestação, reconvenção e revelia",disc:"Processo Civil"},
+{d:"2026-12-29",t:"19:10",dur:"30m",title:"Questões de Processo Civil sobre o tema",disc:"Questões"},
+{d:"2026-12-30",t:"08:00",dur:"35m",title:"09.01 Prisões ⭐⭐⭐",disc:"Processo Penal",prof:"Mauro Stürmer",tipo:"Gravada"},
+{d:"2026-12-30",t:"08:35",dur:"13m",title:"10.01 Medidas Assecuratórias Patrimoniais ⭐",disc:"Processo Penal",prof:"Mauro Stürmer",tipo:"Gravada"},
+{d:"2026-12-30",t:"08:48",dur:"15m",title:"11.01 Questões e Processos Incidentes ⭐⭐",disc:"Processo Penal",prof:"Mauro Stürmer",tipo:"Gravada"},
+{d:"2026-12-30",t:"09:03",dur:"27m",title:"12.01 Procedimento Comum Ordinário ⭐⭐⭐",disc:"Processo Penal",prof:"Letícia Sinatora das Neves",tipo:"Gravada"},
+{d:"2026-12-30",t:"09:30",dur:"11m",title:"12.02 Procedimento Comum Sumário ⭐",disc:"Processo Penal",prof:"Letícia Sinatora das Neves",tipo:"Gravada"},
+{d:"2026-12-30",t:"09:41",dur:"19m",title:"Resolva questões dos conteúdos de hoje",disc:"Questões"},
+{d:"2026-12-31",t:"08:00",dur:"11m",title:"12.03 Procedimento Comum Sumaríssimo",disc:"Processo Penal",prof:"Letícia Sinatora das Neves",tipo:"Gravada"},
+{d:"2026-12-31",t:"08:11",dur:"10m",title:"Ética | leitura do material",disc:"Ética",tipo:"Gravada"},
+{d:"2026-12-31",t:"08:21",dur:"30m",title:"09.01 Sociedade de Advogados ⭐⭐⭐",disc:"Ética",prof:"Leonardo Fetter",tipo:"Gravada"},
+{d:"2026-12-31",t:"08:51",dur:"24m",title:"10.01 Procuração e mandato ⭐⭐⭐",disc:"Ética",prof:"Leonardo Fetter",tipo:"Gravada"},
+{d:"2026-12-31",t:"09:15",dur:"30m",title:"Resolva questões dos conteúdos de hoje",disc:"Questões"},
+{d:"2027-01-01",t:"18:00",dur:"1h",title:"Direito Civil — Prestação de serviço, empreitada, mandato e depósito",disc:"Civil"},
+{d:"2027-01-01",t:"19:10",dur:"30m",title:"Questões de Direito Civil sobre o tema",disc:"Questões"},
+{d:"2027-01-02",t:"10:00",dur:"1h",title:"Estratégias para memorização e revisão dos conteúdos",disc:"Mentoria",tipo:"Ao vivo"},
+{d:"2027-01-02",t:"11:15",dur:"30m",title:"Questões de revisão da semana (caderno de erros)",disc:"Questões"},
+{d:"2027-01-03",t:"09:00",dur:"1m",title:"Descanso — sem estudo hoje",disc:"Revisão"},
+{d:"2027-01-04",t:"18:00",dur:"1h",title:"Direito Processual Civil — Providências preliminares e julgamento conforme o estado do processo",disc:"Processo Civil"},
+{d:"2027-01-04",t:"19:10",dur:"30m",title:"Questões de Processo Civil sobre o tema",disc:"Questões"},
+{d:"2027-01-05",t:"08:00",dur:"32m",title:"11.01 Honorários Advocatícios ⭐⭐⭐",disc:"Ética",prof:"Leonardo Fetter",tipo:"Gravada"},
+{d:"2027-01-05",t:"08:32",dur:"13m",title:"12.01 Advocacia Pro Bono ⭐",disc:"Ética",prof:"Leonardo Fetter",tipo:"Gravada"},
+{d:"2027-01-05",t:"08:45",dur:"29m",title:"13.01 Prerrogativas do advogado e direitos da mulher advogada ⭐⭐⭐",disc:"Ética",prof:"Leonardo Fetter",tipo:"Gravada"},
+{d:"2027-01-05",t:"09:14",dur:"10m",title:"Direito Constitucional | leitura do material",disc:"Constitucional",tipo:"Gravada"},
+{d:"2027-01-05",t:"09:24",dur:"30m",title:"Resolva questões dos conteúdos de hoje",disc:"Questões"},
+{d:"2027-01-06",t:"08:00",dur:"33m",title:"06.03 Competência dos entes federativos ⭐⭐⭐",disc:"Constitucional",prof:"Franciele Letícia Kühl",tipo:"Gravada"},
+{d:"2027-01-06",t:"08:33",dur:"29m",title:"07.02 Estado de defesa e Estado de sítio ⭐⭐⭐",disc:"Constitucional",prof:"Franciele Letícia Kühl",tipo:"Gravada"},
+{d:"2027-01-06",t:"09:02",dur:"10m",title:"08.01 Separação dos Poderes ⭐",disc:"Constitucional",prof:"Franciele Letícia Kühl",tipo:"Gravada"},
+{d:"2027-01-06",t:"09:12",dur:"24m",title:"08.02 Composição do Poder Legislativo e funções ⭐⭐⭐",disc:"Constitucional",prof:"Franciele Letícia Kühl",tipo:"Gravada"},
+{d:"2027-01-06",t:"09:36",dur:"24m",title:"Resolva questões dos conteúdos de hoje",disc:"Questões"},
+{d:"2027-01-07",t:"18:00",dur:"1h",title:"Direito Civil — Fiança, seguro e outros contratos típicos",disc:"Civil"},
+{d:"2027-01-07",t:"19:10",dur:"30m",title:"Questões de Direito Civil sobre o tema",disc:"Questões"},
+{d:"2027-01-08",t:"18:00",dur:"1h",title:"Direito Processual Civil — Provas: ônus, produção antecipada, documental, testemunhal e pericial",disc:"Processo Civil"},
+{d:"2027-01-08",t:"19:10",dur:"30m",title:"Questões de Processo Civil sobre o tema",disc:"Questões"},
+{d:"2027-01-09",t:"10:00",dur:"1h",title:"Faltam 60 dias para a prova, e agora?",disc:"Mentoria",tipo:"Ao vivo"},
+{d:"2027-01-09",t:"11:15",dur:"30m",title:"Questões de revisão da semana (caderno de erros)",disc:"Questões"},
+{d:"2027-01-10",t:"09:00",dur:"1m",title:"Descanso — sem estudo hoje",disc:"Revisão"},
+{d:"2027-01-11",t:"08:00",dur:"12m",title:"08.03 Funcionamento e comissões ⭐⭐",disc:"Constitucional",prof:"Franciele Letícia Kühl",tipo:"Gravada"},
+{d:"2027-01-11",t:"08:12",dur:"10m",title:"Direito Penal | leitura do material",disc:"Penal",tipo:"Gravada"},
+{d:"2027-01-11",t:"08:22",dur:"29m",title:"05.06 Concurso de Crimes ⭐⭐",disc:"Penal",prof:"Nidal Ahmad",tipo:"Gravada"},
+{d:"2027-01-11",t:"08:51",dur:"21m",title:"06.01 Suspensão condicional da pena ⭐",disc:"Penal",prof:"Nidal Ahmad",tipo:"Gravada"},
+{d:"2027-01-11",t:"09:12",dur:"18m",title:"07.01 Livramento condicional ⭐⭐",disc:"Penal",prof:"Nidal Ahmad",tipo:"Gravada"},
+{d:"2027-01-11",t:"09:30",dur:"30m",title:"Resolva questões dos conteúdos de hoje",disc:"Questões"},
+{d:"2027-01-12",t:"08:00",dur:"22m",title:"08.01 Efeitos da condenação ⭐",disc:"Penal",prof:"Nidal Ahmad",tipo:"Gravada"},
+{d:"2027-01-12",t:"08:22",dur:"26m",title:"09.01 Extinção da punibilidade: conceito e causas ⭐",disc:"Penal",prof:"Nidal Ahmad",tipo:"Gravada"},
+{d:"2027-01-12",t:"08:48",dur:"20m",title:"Direito do Trabalho | leitura do material",disc:"Trabalho",tipo:"Gravada"},
+{d:"2027-01-12",t:"09:08",dur:"29m",title:"06.04 Jornada: Intervalo Interjornada ⭐⭐⭐",disc:"Trabalho",prof:"Luiz Henrique Menegon Dutra",tipo:"Gravada"},
+{d:"2027-01-12",t:"09:37",dur:"23m",title:"Resolva questões dos conteúdos de hoje",disc:"Questões"},
+{d:"2027-01-13",t:"18:00",dur:"1h",title:"Direito Civil — Responsabilidade civil: pressupostos e espécies",disc:"Civil"},
+{d:"2027-01-13",t:"19:10",dur:"30m",title:"Questões de Direito Civil sobre o tema",disc:"Questões"},
+{d:"2027-01-14",t:"08:00",dur:"30m",title:"07.01 Remuneração e salário: conceito ⭐⭐⭐",disc:"Trabalho",prof:"Luiz Henrique Menegon Dutra",tipo:"Gravada"},
+{d:"2027-01-14",t:"08:30",dur:"30m",title:"07.02 Equiparação salarial ⭐",disc:"Trabalho",prof:"Luiz Henrique Menegon Dutra",tipo:"Gravada"},
+{d:"2027-01-14",t:"09:00",dur:"30m",title:"07.03 Adicionais ⭐⭐",disc:"Trabalho",prof:"Luiz Henrique Menegon Dutra",tipo:"Gravada"},
+{d:"2027-01-14",t:"09:30",dur:"30m",title:"Resolva questões dos conteúdos de hoje",disc:"Questões"},
+{d:"2027-01-15",t:"18:00",dur:"1h",title:"Direito Processual Civil — Audiência de instrução e julgamento, sentença, coisa julgada e honorários",disc:"Processo Civil"},
+{d:"2027-01-15",t:"19:10",dur:"30m",title:"Questões de Processo Civil sobre o tema",disc:"Questões"},
+{d:"2027-01-16",t:"08:00",dur:"20m",title:"Direito Tributário | leitura do material",disc:"Tributário",tipo:"Gravada"},
+{d:"2027-01-16",t:"08:20",dur:"7m",title:"17.04 Responsabilidade: adquirente de fundo ⭐",disc:"Tributário",prof:"Guilherme Pedrozo da Silva",tipo:"Gravada"},
+{d:"2027-01-16",t:"08:27",dur:"4m",title:"17.05 Responsabilidade de Terceiros ⭐",disc:"Tributário",prof:"Guilherme Pedrozo da Silva",tipo:"Gravada"},
+{d:"2027-01-16",t:"08:31",dur:"9m",title:"17.06 Responsabilidade dos Sócios Administradores ⭐",disc:"Tributário",prof:"Guilherme Pedrozo da Silva",tipo:"Gravada"},
+{d:"2027-01-16",t:"08:40",dur:"7m",title:"17.07 Responsabilidade por Infrações ⭐",disc:"Tributário",prof:"Guilherme Pedrozo da Silva",tipo:"Gravada"},
+{d:"2027-01-16",t:"08:47",dur:"10m",title:"17.08 Responsabilidade por Substituição ⭐",disc:"Tributário",prof:"Guilherme Pedrozo da Silva",tipo:"Gravada"},
+{d:"2027-01-16",t:"08:57",dur:"15m",title:"18.01 Impostos Aduaneiros ⭐⭐",disc:"Tributário",prof:"Guilherme Pedrozo da Silva",tipo:"Gravada"},
+{d:"2027-01-16",t:"09:12",dur:"16m",title:"18.02 Imposto de Renda ⭐⭐",disc:"Tributário",prof:"Guilherme Pedrozo da Silva",tipo:"Gravada"},
+{d:"2027-01-16",t:"09:28",dur:"14m",title:"18.03 Imposto de Produto Industrializado ⭐",disc:"Tributário",prof:"Guilherme Pedrozo da Silva",tipo:"Gravada"},
+{d:"2027-01-16",t:"09:42",dur:"18m",title:"Resolva questões dos conteúdos de hoje",disc:"Questões"},
+{d:"2027-01-17",t:"09:00",dur:"1m",title:"Descanso — sem estudo hoje",disc:"Revisão"},
+{d:"2027-01-18",t:"18:00",dur:"1h",title:"Direito Civil — Responsabilidade civil: dano moral, excludentes e indenização",disc:"Civil"},
+{d:"2027-01-18",t:"19:10",dur:"30m",title:"Questões de Direito Civil sobre o tema",disc:"Questões"},
+{d:"2027-01-19",t:"08:00",dur:"7m",title:"18.04 Imposto sobre Operações Financeiras ⭐",disc:"Tributário",prof:"Guilherme Pedrozo da Silva",tipo:"Gravada"},
+{d:"2027-01-19",t:"08:07",dur:"11m",title:"18.05 Imposto sobre Território Rural ⭐",disc:"Tributário",prof:"Guilherme Pedrozo da Silva",tipo:"Gravada"},
+{d:"2027-01-19",t:"08:18",dur:"4m",title:"18.06 IGF, Residual e Extraordinário ⭐",disc:"Tributário",prof:"Guilherme Pedrozo da Silva",tipo:"Gravada"},
+{d:"2027-01-19",t:"08:22",dur:"4m",title:"18.07 Imposto Seletivo ⭐",disc:"Tributário",prof:"Guilherme Pedrozo da Silva",tipo:"Gravada"},
+{d:"2027-01-19",t:"08:26",dur:"12m",title:"19.01 ITCMD ⭐⭐⭐",disc:"Tributário",prof:"Guilherme Pedrozo da Silva",tipo:"Gravada"},
+{d:"2027-01-19",t:"08:38",dur:"11m",title:"19.02 ICMS ⭐⭐⭐",disc:"Tributário",prof:"Guilherme Pedrozo da Silva",tipo:"Gravada"},
+{d:"2027-01-19",t:"08:49",dur:"20m",title:"Processo do Trabalho | leitura do material",disc:"Processo do Trabalho",tipo:"Gravada"},
+{d:"2027-01-19",t:"09:09",dur:"27m",title:"05.01 Procedimentos Trabalhistas ⭐⭐⭐",disc:"Processo do Trabalho",prof:"Cleize Kohls",tipo:"Gravada"},
+{d:"2027-01-19",t:"09:36",dur:"24m",title:"Resolva questões dos conteúdos de hoje",disc:"Questões"},
+{d:"2027-01-20",t:"18:00",dur:"1h",title:"Direito Processual Civil — Recursos: teoria geral, admissibilidade e efeitos",disc:"Processo Civil"},
+{d:"2027-01-20",t:"19:10",dur:"30m",title:"Questões de Processo Civil sobre o tema",disc:"Questões"},
+{d:"2027-01-21",t:"08:00",dur:"23m",title:"06.01 Petição inicial e Tutela Provisória ⭐",disc:"Processo do Trabalho",prof:"Cleize Kohls",tipo:"Gravada"},
+{d:"2027-01-21",t:"08:23",dur:"22m",title:"06.02 Defesas do réu ⭐⭐",disc:"Processo do Trabalho",prof:"Cleize Kohls",tipo:"Gravada"},
+{d:"2027-01-21",t:"08:45",dur:"25m",title:"07.01 Audiência ⭐⭐⭐",disc:"Processo do Trabalho",prof:"Cleize Kohls",tipo:"Gravada"},
+{d:"2027-01-21",t:"09:10",dur:"28m",title:"08.01 Provas ⭐⭐⭐",disc:"Processo do Trabalho",prof:"Cleize Kohls",tipo:"Gravada"},
+{d:"2027-01-21",t:"09:38",dur:"22m",title:"Resolva questões dos conteúdos de hoje",disc:"Questões"},
+{d:"2027-01-22",t:"18:00",dur:"1h",title:"Direito Civil — Posse: classificação, efeitos e proteção possessória",disc:"Civil"},
+{d:"2027-01-22",t:"19:10",dur:"30m",title:"Questões de Direito Civil sobre o tema",disc:"Questões"},
+{d:"2027-01-23",t:"09:00",dur:"1h30",title:"Dia só de questões — banco de questões de Civil, Tributário, Processo do Trabalho, Processo Civil (revisar cada erro)",disc:"Questões"},
+{d:"2027-01-24",t:"12:00",dur:"6h",title:"Simule o ambiente de prova com o Ceisc | Estude comigo",disc:"Mentoria",prof:"Lidiane Fonseca",tipo:"Ao vivo"},
+{d:"2027-01-25",t:"08:00",dur:"14m",title:"09.01 Razões finais, sentença e coisa julgada ⭐",disc:"Processo do Trabalho",prof:"Cleize Kohls",tipo:"Gravada"},
+{d:"2027-01-25",t:"08:14",dur:"20m",title:"Processo Penal | leitura do material",disc:"Processo Penal",tipo:"Gravada"},
+{d:"2027-01-25",t:"08:34",dur:"18m",title:"12.04 Procedimentos especiais — 1ª fase (crimes dolosos vida) ⭐⭐",disc:"Processo Penal",prof:"Letícia Sinatora das Neves",tipo:"Gravada"},
+{d:"2027-01-25",t:"08:52",dur:"18m",title:"12.05 Procedimentos especiais — 2ª fase (crimes dolosos vida) ⭐⭐⭐",disc:"Processo Penal",prof:"Letícia Sinatora das Neves",tipo:"Gravada"},
+{d:"2027-01-25",t:"09:10",dur:"17m",title:"13.01 Juizados Especiais Criminais ⭐⭐⭐",disc:"Processo Penal",prof:"Letícia Sinatora das Neves",tipo:"Gravada"},
+{d:"2027-01-25",t:"09:27",dur:"8m",title:"13.02 Suspensão Condicional do Processo ⭐",disc:"Processo Penal",prof:"Letícia Sinatora das Neves",tipo:"Gravada"},
+{d:"2027-01-25",t:"09:35",dur:"8m",title:"14.01 Sentença e Coisa Julgada ⭐",disc:"Processo Penal",prof:"Letícia Sinatora das Neves",tipo:"Gravada"},
+{d:"2027-01-25",t:"09:43",dur:"17m",title:"Resolva questões dos conteúdos de hoje",disc:"Questões"},
+{d:"2027-01-26",t:"18:00",dur:"1h",title:"Direito Processual Civil — Apelação e agravo de instrumento",disc:"Processo Civil"},
+{d:"2027-01-26",t:"19:10",dur:"30m",title:"Questões de Processo Civil sobre o tema",disc:"Questões"},
+{d:"2027-01-27",t:"08:00",dur:"16m",title:"15.01 Recursos em Processo Penal — pressupostos ⭐⭐",disc:"Processo Penal",prof:"Letícia Sinatora das Neves",tipo:"Gravada"},
+{d:"2027-01-27",t:"08:16",dur:"19m",title:"15.02 Recurso em Sentido Estrito (RESE) ⭐⭐⭐",disc:"Processo Penal",prof:"Letícia Sinatora das Neves",tipo:"Gravada"},
+{d:"2027-01-27",t:"08:35",dur:"16m",title:"15.03 Apelação ⭐⭐⭐",disc:"Processo Penal",prof:"Letícia Sinatora das Neves",tipo:"Gravada"},
+{d:"2027-01-27",t:"08:51",dur:"6m",title:"15.04 Embargos Infringentes e de Nulidade ⭐",disc:"Processo Penal",prof:"Letícia Sinatora das Neves",tipo:"Gravada"},
+{d:"2027-01-27",t:"08:57",dur:"3m",title:"15.05 Embargos de Declaração ⭐",disc:"Processo Penal",prof:"Letícia Sinatora das Neves",tipo:"Gravada"},
+{d:"2027-01-27",t:"09:00",dur:"5m",title:"15.06 Carta Testemunhável ⭐",disc:"Processo Penal",prof:"Letícia Sinatora das Neves",tipo:"Gravada"},
+{d:"2027-01-27",t:"09:05",dur:"10m",title:"Direito Constitucional | leitura do material",disc:"Constitucional",tipo:"Gravada"},
+{d:"2027-01-27",t:"09:15",dur:"15m",title:"08.04 Imunidades parlamentares ⭐⭐",disc:"Constitucional",prof:"Franciele Letícia Kühl",tipo:"Gravada"},
+{d:"2027-01-27",t:"09:30",dur:"6m",title:"08.05 Perda de mandato de parlamentar ⭐",disc:"Constitucional",prof:"Franciele Letícia Kühl",tipo:"Gravada"},
+{d:"2027-01-27",t:"09:36",dur:"24m",title:"Resolva questões dos conteúdos de hoje",disc:"Questões"},
+{d:"2027-01-28",t:"08:00",dur:"10m",title:"08.06 Tribunal de Contas da União ⭐",disc:"Constitucional",prof:"Franciele Letícia Kühl",tipo:"Gravada"},
+{d:"2027-01-28",t:"08:10",dur:"23m",title:"09.01 Etapas do Processo Legislativo ⭐⭐⭐",disc:"Constitucional",prof:"Franciele Letícia Kühl",tipo:"Gravada"},
+{d:"2027-01-28",t:"08:33",dur:"36m",title:"09.02 Leis Ordinárias e Complementares ⭐",disc:"Constitucional",prof:"Franciele Letícia Kühl",tipo:"Gravada"},
+{d:"2027-01-28",t:"09:09",dur:"8m",title:"09.03 Emenda Constitucional ⭐⭐⭐",disc:"Constitucional",prof:"Franciele Letícia Kühl",tipo:"Gravada"},
+{d:"2027-01-28",t:"09:17",dur:"4m",title:"09.04 Leis Delegadas ⭐",disc:"Constitucional",prof:"Franciele Letícia Kühl",tipo:"Gravada"},
+{d:"2027-01-28",t:"09:21",dur:"18m",title:"09.05 Medida Provisória ⭐⭐⭐",disc:"Constitucional",prof:"Franciele Letícia Kühl",tipo:"Gravada"},
+{d:"2027-01-28",t:"09:39",dur:"5m",title:"09.06 Decreto Legislativo ⭐",disc:"Constitucional",prof:"Franciele Letícia Kühl",tipo:"Gravada"},
+{d:"2027-01-28",t:"09:44",dur:"16m",title:"Resolva questões dos conteúdos de hoje",disc:"Questões"},
+{d:"2027-01-29",t:"18:00",dur:"1h",title:"Direito Civil — Propriedade: aquisição e perda, usucapião",disc:"Civil"},
+{d:"2027-01-29",t:"19:10",dur:"30m",title:"Questões de Direito Civil sobre o tema",disc:"Questões"},
+{d:"2027-01-30",t:"08:00",dur:"3m",title:"09.07 Resolução ⭐",disc:"Constitucional",prof:"Franciele Letícia Kühl",tipo:"Gravada"},
+{d:"2027-01-30",t:"08:03",dur:"30m",title:"10.01 Poder Executivo: composição e eleições ⭐",disc:"Constitucional",prof:"Franciele Letícia Kühl",tipo:"Gravada"},
+{d:"2027-01-30",t:"08:33",dur:"10m",title:"Direito Penal | leitura do material",disc:"Penal",tipo:"Gravada"},
+{d:"2027-01-30",t:"08:43",dur:"47m",title:"09.02 Extinção da punibilidade: prescrição ⭐⭐",disc:"Penal",prof:"Nidal Ahmad",tipo:"Gravada"},
+{d:"2027-01-30",t:"09:30",dur:"30m",title:"Resolva questões dos conteúdos de hoje",disc:"Questões"},
+{d:"2027-01-31",t:"13:00",dur:"5h",title:"Simulado Autoral Ceisc 02",disc:"Simulado"},
+{d:"2027-01-31",t:"19:30",dur:"30m",title:"Corrigir o simulado e anotar erros no caderno",disc:"Revisão"},
+{d:"2027-02-01",t:"18:00",dur:"1h",title:"Direito Processual Civil — Embargos de declaração, agravo interno, recurso extraordinário e especial",disc:"Processo Civil"},
+{d:"2027-02-01",t:"19:10",dur:"30m",title:"Questões de Processo Civil sobre o tema",disc:"Questões"},
+{d:"2027-02-02",t:"08:00",dur:"31m",title:"10.01 Crimes contra a vida: Homicídio ⭐⭐",disc:"Penal",prof:"Arnaldo França Quaresma Júnior",tipo:"Gravada"},
+{d:"2027-02-02",t:"08:31",dur:"34m",title:"10.02 Induzimento/instigação ao suicídio, infanticídio e aborto ⭐⭐",disc:"Penal",prof:"Arnaldo França Quaresma Júnior",tipo:"Gravada"},
+{d:"2027-02-02",t:"09:05",dur:"22m",title:"10.03 Feminicídio ⭐",disc:"Penal",prof:"Arnaldo França Quaresma Júnior",tipo:"Gravada"},
+{d:"2027-02-02",t:"09:27",dur:"30m",title:"Resolva questões dos conteúdos de hoje",disc:"Questões"},
+{d:"2027-02-03",t:"18:00",dur:"1h",title:"Direito Civil — Direitos de vizinhança e condomínio (geral e edilício)",disc:"Civil"},
+{d:"2027-02-03",t:"19:10",dur:"30m",title:"Questões de Direito Civil sobre o tema",disc:"Questões"},
+{d:"2027-02-04",t:"08:00",dur:"20m",title:"Direito do Trabalho | leitura do material",disc:"Trabalho",tipo:"Gravada"},
+{d:"2027-02-04",t:"08:20",dur:"25m",title:"08.01 Término do contrato de trabalho ⭐⭐⭐",disc:"Trabalho",prof:"Luiz Henrique Menegon Dutra",tipo:"Gravada"},
+{d:"2027-02-04",t:"08:45",dur:"28m",title:"08.02 Verbas Rescisórias ⭐⭐⭐",disc:"Trabalho",prof:"Luiz Henrique Menegon Dutra",tipo:"Gravada"},
+{d:"2027-02-04",t:"09:13",dur:"29m",title:"08.03 Rescisão Indireta ⭐",disc:"Trabalho",prof:"Luiz Henrique Menegon Dutra",tipo:"Gravada"},
+{d:"2027-02-04",t:"09:42",dur:"18m",title:"Resolva questões dos conteúdos de hoje",disc:"Questões"},
+{d:"2027-02-05",t:"18:00",dur:"1h",title:"Direito Processual Civil — Ordem dos processos nos tribunais, precedentes (IRDR, IAC) e ação rescisória",disc:"Processo Civil"},
+{d:"2027-02-05",t:"19:10",dur:"30m",title:"Questões de Processo Civil sobre o tema",disc:"Questões"},
+{d:"2027-02-06",t:"10:00",dur:"1h",title:"Preparação na reta final",disc:"Mentoria",tipo:"Ao vivo"},
+{d:"2027-02-06",t:"11:15",dur:"30m",title:"Questões de revisão da semana (caderno de erros)",disc:"Questões"},
+{d:"2027-02-07",t:"09:00",dur:"1m",title:"Descanso — sem estudo hoje",disc:"Revisão"},
+{d:"2027-02-08",t:"08:00",dur:"28m",title:"09.01 Estabilidade ⭐⭐⭐",disc:"Trabalho",prof:"Luiz Henrique Menegon Dutra",tipo:"Gravada"},
+{d:"2027-02-08",t:"08:28",dur:"23m",title:"10.01 Medicina e segurança do trabalho ⭐",disc:"Trabalho",prof:"Luiz Henrique Menegon Dutra",tipo:"Gravada"},
+{d:"2027-02-08",t:"08:51",dur:"6m",title:"11.01 Força maior ⭐",disc:"Trabalho",prof:"Luiz Henrique Menegon Dutra",tipo:"Gravada"},
+{d:"2027-02-08",t:"08:57",dur:"10m",title:"Direito Constitucional | leitura do material",disc:"Constitucional",tipo:"Gravada"},
+{d:"2027-02-08",t:"09:07",dur:"15m",title:"10.02 Crime comum e de responsabilidade do Presidente ⭐",disc:"Constitucional",prof:"Franciele Letícia Kühl",tipo:"Gravada"},
+{d:"2027-02-08",t:"09:22",dur:"5m",title:"11.01 Organização e composição do Poder Judiciário ⭐⭐",disc:"Constitucional",prof:"Maria Valentina de Moraes",tipo:"Gravada"},
+{d:"2027-02-08",t:"09:27",dur:"18m",title:"11.02 Competências do Poder Judiciário ⭐",disc:"Constitucional",prof:"Maria Valentina de Moraes",tipo:"Gravada"},
+{d:"2027-02-08",t:"09:45",dur:"15m",title:"Resolva questões dos conteúdos de hoje",disc:"Questões"},
+{d:"2027-02-09",t:"18:00",dur:"1h",title:"Direito Civil — Direitos reais sobre coisa alheia e de garantia: servidões, usufruto, penhor, hipoteca, alienação fiduciária",disc:"Civil"},
+{d:"2027-02-09",t:"19:10",dur:"30m",title:"Questões de Direito Civil sobre o tema",disc:"Questões"},
+{d:"2027-02-10",t:"08:00",dur:"7m",title:"11.03 CNJ: composição e competências ⭐⭐",disc:"Constitucional",prof:"Maria Valentina de Moraes",tipo:"Gravada"},
+{d:"2027-02-10",t:"08:07",dur:"21m",title:"12.01 Controle de Constitucionalidade: formas e efeitos ⭐",disc:"Constitucional",prof:"Maria Valentina de Moraes",tipo:"Gravada"},
+{d:"2027-02-10",t:"08:28",dur:"5m",title:"12.02 Reserva de plenário; controle difuso e concentrado ⭐⭐⭐",disc:"Constitucional",prof:"Maria Valentina de Moraes",tipo:"Gravada"},
+{d:"2027-02-10",t:"08:33",dur:"12m",title:"12.03 Recurso Extraordinário ⭐",disc:"Constitucional",prof:"Maria Valentina de Moraes",tipo:"Gravada"},
+{d:"2027-02-10",t:"08:45",dur:"10m",title:"12.04 Recurso Ordinário Constitucional ⭐",disc:"Constitucional",prof:"Franciele Letícia Kühl",tipo:"Gravada"},
+{d:"2027-02-10",t:"08:55",dur:"9m",title:"12.05 Súmulas Vinculantes ⭐⭐⭐",disc:"Constitucional",prof:"Maria Valentina de Moraes",tipo:"Gravada"},
+{d:"2027-02-10",t:"09:04",dur:"20m",title:"Processo do Trabalho | leitura do material",disc:"Processo do Trabalho",tipo:"Gravada"},
+{d:"2027-02-10",t:"09:24",dur:"12m",title:"10.01 Reparação por dano processual ⭐",disc:"Processo do Trabalho",prof:"Cleize Kohls",tipo:"Gravada"},
+{d:"2027-02-10",t:"09:36",dur:"24m",title:"Resolva questões dos conteúdos de hoje",disc:"Questões"},
+{d:"2027-02-11",t:"18:00",dur:"1h",title:"Direito Processual Civil — Liquidação e cumprimento de sentença por quantia certa",disc:"Processo Civil"},
+{d:"2027-02-11",t:"19:10",dur:"30m",title:"Questões de Processo Civil sobre o tema",disc:"Questões"},
+{d:"2027-02-12",t:"08:00",dur:"18m",title:"10.02 Dissídio coletivo ⭐",disc:"Processo do Trabalho",prof:"Cleize Kohls",tipo:"Gravada"},
+{d:"2027-02-12",t:"08:18",dur:"30m",title:"11.01 Teoria Geral dos Recursos ⭐⭐⭐",disc:"Processo do Trabalho",prof:"Cleize Kohls",tipo:"Gravada"},
+{d:"2027-02-12",t:"08:48",dur:"11m",title:"11.02 Recurso Ordinário ⭐⭐⭐",disc:"Processo do Trabalho",prof:"Cleize Kohls",tipo:"Gravada"},
+{d:"2027-02-12",t:"08:59",dur:"21m",title:"11.03 Recurso de Revista ⭐⭐",disc:"Processo do Trabalho",prof:"Cleize Kohls",tipo:"Gravada"},
+{d:"2027-02-12",t:"09:20",dur:"11m",title:"11.04 Embargos de Declaração ⭐",disc:"Processo do Trabalho",prof:"Cleize Kohls",tipo:"Gravada"},
+{d:"2027-02-12",t:"09:31",dur:"11m",title:"11.05 Embargos no TST ⭐",disc:"Processo do Trabalho",prof:"Cleize Kohls",tipo:"Gravada"},
+{d:"2027-02-12",t:"09:42",dur:"18m",title:"Resolva questões dos conteúdos de hoje",disc:"Questões"},
+{d:"2027-02-13",t:"09:00",dur:"45m",title:"Revisão da semana: mapas mentais e releitura de Trabalho, Constitucional, Civil, Processo do Trabalho, Processo Civil",disc:"Revisão"},
+{d:"2027-02-13",t:"09:50",dur:"45m",title:"Questões dos temas da semana + caderno de erros",disc:"Questões"},
+{d:"2027-02-14",t:"09:00",dur:"1m",title:"Descanso — sem estudo hoje",disc:"Revisão"},
+{d:"2027-02-15",t:"18:00",dur:"1h",title:"Direito Civil — Família: casamento (habilitação, impedimentos, invalidade)",disc:"Civil"},
+{d:"2027-02-15",t:"19:10",dur:"30m",title:"Questões de Direito Civil sobre o tema",disc:"Questões"},
+{d:"2027-02-16",t:"08:00",dur:"13m",title:"11.06 Agravo de Instrumento ⭐",disc:"Processo do Trabalho",prof:"Cleize Kohls",tipo:"Gravada"},
+{d:"2027-02-16",t:"08:13",dur:"10m",title:"Direito Constitucional | leitura do material",disc:"Constitucional",tipo:"Gravada"},
+{d:"2027-02-16",t:"08:23",dur:"20m",title:"13.01 ADIs e ADOs ⭐⭐⭐",disc:"Constitucional",prof:"Maria Valentina de Moraes",tipo:"Gravada"},
+{d:"2027-02-16",t:"08:43",dur:"7m",title:"13.02 ADCs ⭐⭐⭐",disc:"Constitucional",prof:"Maria Valentina de Moraes",tipo:"Gravada"},
+{d:"2027-02-16",t:"08:50",dur:"7m",title:"13.03 ADPFs ⭐⭐",disc:"Constitucional",prof:"Maria Valentina de Moraes",tipo:"Gravada"},
+{d:"2027-02-16",t:"08:57",dur:"10m",title:"14.01 Habeas Data ⭐⭐",disc:"Constitucional",prof:"Franciele Letícia Kühl",tipo:"Gravada"},
+{d:"2027-02-16",t:"09:07",dur:"13m",title:"14.02 Mandado de Segurança ⭐",disc:"Constitucional",prof:"Franciele Letícia Kühl",tipo:"Gravada"},
+{d:"2027-02-16",t:"09:20",dur:"10m",title:"14.03 Mandado de Injunção ⭐⭐⭐",disc:"Constitucional",prof:"Franciele Letícia Kühl",tipo:"Gravada"},
+{d:"2027-02-16",t:"09:30",dur:"11m",title:"14.04 Ação Civil Pública ⭐",disc:"Constitucional",prof:"Franciele Letícia Kühl",tipo:"Gravada"},
+{d:"2027-02-16",t:"09:41",dur:"19m",title:"Resolva questões dos conteúdos de hoje",disc:"Questões"},
+{d:"2027-02-17",t:"08:00",dur:"10m",title:"14.05 Ação Popular ⭐⭐⭐",disc:"Constitucional",prof:"Franciele Letícia Kühl",tipo:"Gravada"},
+{d:"2027-02-17",t:"08:10",dur:"12m",title:"15.01 Ordem Econômica (arts. 170-175) ⭐⭐⭐",disc:"Constitucional",prof:"Maria Valentina de Moraes",tipo:"Gravada"},
+{d:"2027-02-17",t:"08:22",dur:"8m",title:"15.02 Previdência e Assistência Social ⭐⭐⭐",disc:"Constitucional",prof:"Maria Valentina de Moraes",tipo:"Gravada"},
+{d:"2027-02-17",t:"08:30",dur:"9m",title:"15.03 Saúde ⭐⭐⭐",disc:"Constitucional",prof:"Maria Valentina de Moraes",tipo:"Gravada"},
+{d:"2027-02-17",t:"08:39",dur:"9m",title:"15.04 Educação ⭐⭐⭐",disc:"Constitucional",prof:"Maria Valentina de Moraes",tipo:"Gravada"},
+{d:"2027-02-17",t:"08:48",dur:"6m",title:"15.05 Cultura ⭐",disc:"Constitucional",prof:"Maria Valentina de Moraes",tipo:"Gravada"},
+{d:"2027-02-17",t:"08:54",dur:"10m",title:"Direito Penal | leitura do material",disc:"Penal",tipo:"Gravada"},
+{d:"2027-02-17",t:"09:04",dur:"34m",title:"11.01 Lesões corporais ⭐",disc:"Penal",prof:"Arnaldo França Quaresma Júnior",tipo:"Gravada"},
+{d:"2027-02-17",t:"09:38",dur:"22m",title:"Resolva questões dos conteúdos de hoje",disc:"Questões"},
+{d:"2027-02-18",t:"18:00",dur:"1h",title:"Direito Processual Civil — Cumprimento de obrigação de fazer, não fazer, entregar coisa e contra a Fazenda Pública",disc:"Processo Civil"},
+{d:"2027-02-18",t:"19:10",dur:"30m",title:"Questões de Processo Civil sobre o tema",disc:"Questões"},
+{d:"2027-02-19",t:"18:00",dur:"1h",title:"Direito Civil — Regimes de bens e pacto antenupcial",disc:"Civil"},
+{d:"2027-02-19",t:"19:10",dur:"30m",title:"Questões de Direito Civil sobre o tema",disc:"Questões"},
+{d:"2027-02-20",t:"08:00",dur:"50m",title:"12.01 Crimes contra a honra: calúnia, difamação, injúria ⭐⭐",disc:"Penal",prof:"Arnaldo França Quaresma Júnior",tipo:"Gravada"},
+{d:"2027-02-20",t:"08:50",dur:"36m",title:"13.01 Crimes contra o Patrimônio: Furto ⭐⭐⭐",disc:"Penal",prof:"Arnaldo França Quaresma Júnior",tipo:"Gravada"},
+{d:"2027-02-20",t:"09:26",dur:"30m",title:"Resolva questões dos conteúdos de hoje",disc:"Questões"},
+{d:"2027-02-21",t:"09:00",dur:"1m",title:"Descanso — sem estudo hoje",disc:"Revisão"},
+{d:"2027-02-22",t:"08:00",dur:"20m",title:"Processo do Trabalho | leitura do material",disc:"Processo do Trabalho",tipo:"Gravada"},
+{d:"2027-02-22",t:"08:20",dur:"11m",title:"11.07 Agravo de Petição ⭐⭐⭐",disc:"Processo do Trabalho",prof:"Cleize Kohls",tipo:"Gravada"},
+{d:"2027-02-22",t:"08:31",dur:"10m",title:"11.08 Recurso Extraordinário ⭐",disc:"Processo do Trabalho",prof:"Cleize Kohls",tipo:"Gravada"},
+{d:"2027-02-22",t:"08:41",dur:"11m",title:"11.09 Agravo Interno ⭐",disc:"Processo do Trabalho",prof:"Cleize Kohls",tipo:"Gravada"},
+{d:"2027-02-22",t:"08:52",dur:"18m",title:"12.01 Liquidação de Sentença ⭐⭐",disc:"Processo do Trabalho",prof:"Cleize Kohls",tipo:"Gravada"},
+{d:"2027-02-22",t:"09:10",dur:"21m",title:"12.02 Regras gerais da execução ⭐⭐⭐",disc:"Processo do Trabalho",prof:"Cleize Kohls",tipo:"Gravada"},
+{d:"2027-02-22",t:"09:31",dur:"29m",title:"Resolva questões dos conteúdos de hoje",disc:"Questões"},
+{d:"2027-02-23",t:"18:00",dur:"1h",title:"Direito Processual Civil — Execução de título extrajudicial: requisitos, penhora e expropriação",disc:"Processo Civil"},
+{d:"2027-02-23",t:"19:10",dur:"30m",title:"Questões de Processo Civil sobre o tema",disc:"Questões"},
+{d:"2027-02-24",t:"08:00",dur:"31m",title:"12.03 Embargos, impugnação e exceção de pré-executividade ⭐⭐⭐",disc:"Processo do Trabalho",prof:"Cleize Kohls",tipo:"Gravada"},
+{d:"2027-02-24",t:"08:31",dur:"25m",title:"12.04 Penhora e expropriação ⭐",disc:"Processo do Trabalho",prof:"Cleize Kohls",tipo:"Gravada"},
+{d:"2027-02-24",t:"08:56",dur:"20m",title:"Direito Tributário | leitura do material",disc:"Tributário",tipo:"Gravada"},
+{d:"2027-02-24",t:"09:16",dur:"6m",title:"19.03 IPVA ⭐⭐⭐",disc:"Tributário",prof:"Guilherme Pedrozo da Silva",tipo:"Gravada"},
+{d:"2027-02-24",t:"09:22",dur:"5m",title:"19.04 Imposto sobre Bens e Serviços ⭐",disc:"Tributário",prof:"Guilherme Pedrozo da Silva",tipo:"Gravada"},
+{d:"2027-02-24",t:"09:27",dur:"14m",title:"20.01 IPTU ⭐⭐⭐",disc:"Tributário",prof:"Guilherme Pedrozo da Silva",tipo:"Gravada"},
+{d:"2027-02-24",t:"09:41",dur:"19m",title:"Resolva questões dos conteúdos de hoje",disc:"Questões"},
+{d:"2027-02-25",t:"18:00",dur:"1h",title:"Direito Civil — Divórcio, dissolução da sociedade conjugal e união estável",disc:"Civil"},
+{d:"2027-02-25",t:"19:10",dur:"30m",title:"Questões de Direito Civil sobre o tema",disc:"Questões"},
+{d:"2027-02-26",t:"08:00",dur:"20m",title:"20.02 ITBI ⭐",disc:"Tributário",prof:"Guilherme Pedrozo da Silva",tipo:"Gravada"},
+{d:"2027-02-26",t:"08:20",dur:"16m",title:"20.03 ISS ⭐⭐⭐",disc:"Tributário",prof:"Guilherme Pedrozo da Silva",tipo:"Gravada"},
+{d:"2027-02-26",t:"08:36",dur:"12m",title:"21.01 Execução Fiscal: ação e procedimento ⭐⭐",disc:"Tributário",prof:"Guilherme Pedrozo da Silva",tipo:"Gravada"},
+{d:"2027-02-26",t:"08:48",dur:"26m",title:"22.01 Ações Tributárias ⭐⭐⭐",disc:"Tributário",prof:"Guilherme Pedrozo da Silva",tipo:"Gravada"},
+{d:"2027-02-26",t:"09:14",dur:"12m",title:"23.01 Fiscalização Tributária ⭐",disc:"Tributário",prof:"Rafael Novais",tipo:"Gravada"},
+{d:"2027-02-26",t:"09:26",dur:"7m",title:"23.02 Dívida Ativa ⭐⭐⭐",disc:"Tributário",prof:"Rafael Novais",tipo:"Gravada"},
+{d:"2027-02-26",t:"09:33",dur:"7m",title:"23.03 Certidões ⭐",disc:"Tributário",prof:"Rafael Novais",tipo:"Gravada"},
+{d:"2027-02-26",t:"09:40",dur:"20m",title:"Resolva questões dos conteúdos de hoje",disc:"Questões"},
+{d:"2027-02-27",t:"18:00",dur:"1h",title:"Direito Processual Civil — Defesas do executado: embargos à execução, impugnação e exceção de pré-executividade",disc:"Processo Civil"},
+{d:"2027-02-27",t:"19:10",dur:"30m",title:"Questões de Processo Civil sobre o tema",disc:"Questões"},
+{d:"2027-02-28",t:"09:00",dur:"1m",title:"Descanso — sem estudo hoje",disc:"Revisão"},
+{d:"2027-03-01",t:"08:00",dur:"20m",title:"Direito do Trabalho | leitura do material",disc:"Trabalho",tipo:"Gravada"},
+{d:"2027-03-01",t:"08:20",dur:"20m",title:"12.01 FGTS ⭐⭐",disc:"Trabalho",prof:"Luiz Henrique Menegon Dutra",tipo:"Gravada"},
+{d:"2027-03-01",t:"08:40",dur:"28m",title:"13.01 Direito Coletivo do Trabalho ⭐",disc:"Trabalho",prof:"Luiz Henrique Menegon Dutra",tipo:"Gravada"},
+{d:"2027-03-01",t:"09:08",dur:"27m",title:"13.02 Acordo e Convenção Coletiva ⭐⭐⭐",disc:"Trabalho",prof:"Luiz Henrique Menegon Dutra",tipo:"Gravada"},
+{d:"2027-03-01",t:"09:35",dur:"25m",title:"Resolva questões dos conteúdos de hoje",disc:"Questões"},
+{d:"2027-03-02",t:"18:00",dur:"1h",title:"Direito Civil — Filiação, parentesco e poder familiar",disc:"Civil"},
+{d:"2027-03-02",t:"19:10",dur:"30m",title:"Questões de Direito Civil sobre o tema",disc:"Questões"},
+{d:"2027-03-03",t:"08:00",dur:"29m",title:"14.01 Tutelas especiais: bancários, músicos, motoristas etc. ⭐⭐",disc:"Trabalho",prof:"Luiz Henrique Menegon Dutra",tipo:"Gravada"},
+{d:"2027-03-03",t:"08:29",dur:"30m",title:"14.02 Tutelas especiais: menor, aprendiz, doméstico ⭐⭐",disc:"Trabalho",prof:"Luiz Henrique Menegon Dutra",tipo:"Gravada"},
+{d:"2027-03-03",t:"08:59",dur:"10m",title:"Direito Penal | leitura do material",disc:"Penal",tipo:"Gravada"},
+{d:"2027-03-03",t:"09:09",dur:"34m",title:"13.02 Crimes contra o Patrimônio: Roubo e Extorsão ⭐⭐⭐",disc:"Penal",prof:"Arnaldo França Quaresma Júnior",tipo:"Gravada"},
+{d:"2027-03-03",t:"09:43",dur:"17m",title:"Resolva questões dos conteúdos de hoje",disc:"Questões"},
+{d:"2027-03-04",t:"08:00",dur:"40m",title:"14.01 Crimes contra a Dignidade Sexual ⭐⭐⭐",disc:"Penal",prof:"Arnaldo França Quaresma Júnior",tipo:"Gravada"},
+{d:"2027-03-04",t:"08:40",dur:"25m",title:"15.01 Crimes contra a Fé Pública ⭐",disc:"Penal",prof:"Arnaldo França Quaresma Júnior",tipo:"Gravada"},
+{d:"2027-03-04",t:"09:05",dur:"10m",title:"Ética | leitura do material",disc:"Ética",tipo:"Gravada"},
+{d:"2027-03-04",t:"09:15",dur:"14m",title:"13.02 Responsabilidades do Advogado ⭐⭐⭐",disc:"Ética",prof:"Leonardo Fetter",tipo:"Gravada"},
+{d:"2027-03-04",t:"09:29",dur:"30m",title:"Resolva questões dos conteúdos de hoje",disc:"Questões"},
+{d:"2027-03-05",t:"18:00",dur:"1h",title:"Direito Processual Civil — Procedimentos especiais: consignação em pagamento, possessórias e embargos de terceiro",disc:"Processo Civil"},
+{d:"2027-03-05",t:"19:10",dur:"30m",title:"Questões de Processo Civil sobre o tema",disc:"Questões"},
+{d:"2027-03-06",t:"09:00",dur:"1h30",title:"Dia só de questões — banco de questões de Trabalho, Civil, Penal, Ética, Processo Civil (revisar cada erro)",disc:"Questões"},
+{d:"2027-03-07",t:"13:00",dur:"5h",title:"Simulado Autoral Ceisc 03",disc:"Simulado"},
+{d:"2027-03-07",t:"19:30",dur:"30m",title:"Corrigir o simulado e anotar erros no caderno",disc:"Revisão"},
+{d:"2027-03-08",t:"18:00",dur:"1h",title:"Direito Civil — Alimentos, tutela e curatela",disc:"Civil"},
+{d:"2027-03-08",t:"19:10",dur:"30m",title:"Questões de Direito Civil sobre o tema",disc:"Questões"},
+{d:"2027-03-09",t:"08:00",dur:"26m",title:"14.01 Publicidade Profissional ⭐⭐⭐",disc:"Ética",prof:"Leonardo Fetter",tipo:"Gravada"},
+{d:"2027-03-09",t:"08:26",dur:"26m",title:"17.01 Incompatibilidade e Impedimento ⭐⭐",disc:"Ética",prof:"Leonardo Fetter",tipo:"Gravada"},
+{d:"2027-03-09",t:"08:52",dur:"27m",title:"15.01 Infrações e Sanções Disciplinares ⭐⭐⭐",disc:"Ética",prof:"Leonardo Fetter",tipo:"Gravada"},
+{d:"2027-03-09",t:"09:19",dur:"30m",title:"Resolva questões dos conteúdos de hoje",disc:"Questões"},
+{d:"2027-03-10",t:"08:00",dur:"28m",title:"16.01 Processo Disciplinar ⭐⭐⭐",disc:"Ética",prof:"Leonardo Fetter",tipo:"Gravada"},
+{d:"2027-03-10",t:"08:28",dur:"20m",title:"Processo do Trabalho | leitura do material",disc:"Processo do Trabalho",tipo:"Gravada"},
+{d:"2027-03-10",t:"08:48",dur:"16m",title:"12.05 Execução contra massa falida e Fazenda Pública ⭐",disc:"Processo do Trabalho",prof:"Cleize Kohls",tipo:"Gravada"},
+{d:"2027-03-10",t:"09:04",dur:"15m",title:"13.01 Inquérito judicial p/ apuração de falta grave ⭐",disc:"Processo do Trabalho",prof:"Cleize Kohls",tipo:"Gravada"},
+{d:"2027-03-10",t:"09:19",dur:"16m",title:"13.02 Ação Rescisória ⭐",disc:"Processo do Trabalho",prof:"Cleize Kohls",tipo:"Gravada"},
+{d:"2027-03-10",t:"09:35",dur:"25m",title:"Resolva questões dos conteúdos de hoje",disc:"Questões"},
+{d:"2027-03-11",t:"18:00",dur:"1h",title:"Direito Processual Civil — Procedimentos especiais: ação monitória, inventário e partilha, ações de família",disc:"Processo Civil"},
+{d:"2027-03-11",t:"19:10",dur:"30m",title:"Questões de Processo Civil sobre o tema",disc:"Questões"},
+{d:"2027-03-12",t:"18:00",dur:"1h",title:"Direito Civil — Sucessões: sucessão legítima e ordem de vocação hereditária",disc:"Civil"},
+{d:"2027-03-12",t:"19:10",dur:"30m",title:"Questões de Direito Civil sobre o tema",disc:"Questões"},
+{d:"2027-03-13",t:"08:00",dur:"13m",title:"13.03 Acordo Extrajudicial ⭐⭐⭐",disc:"Processo do Trabalho",prof:"Cleize Kohls",tipo:"Gravada"},
+{d:"2027-03-13",t:"08:13",dur:"16m",title:"13.04 Mandado de Segurança ⭐⭐",disc:"Processo do Trabalho",prof:"Cleize Kohls",tipo:"Gravada"},
+{d:"2027-03-13",t:"08:29",dur:"21m",title:"13.05 Ação de Consignação, Monitória e outras ⭐",disc:"Processo do Trabalho",prof:"Cleize Kohls",tipo:"Gravada"},
+{d:"2027-03-13",t:"08:50",dur:"11m",title:"13.06 Ação anulatória de fiscalização do MTE ⭐",disc:"Processo do Trabalho",prof:"Cleize Kohls",tipo:"Gravada"},
+{d:"2027-03-13",t:"09:01",dur:"31m",title:"13.07 Teses Vinculantes do TST ⭐",disc:"Processo do Trabalho",prof:"Cleize Kohls",tipo:"Gravada"},
+{d:"2027-03-13",t:"09:32",dur:"28m",title:"Resolva questões dos conteúdos de hoje",disc:"Questões"},
+{d:"2027-03-14",t:"09:00",dur:"1m",title:"Descanso — sem estudo hoje",disc:"Revisão"},
+{d:"2027-03-15",t:"08:00",dur:"10m",title:"Direito Penal | leitura do material",disc:"Penal",tipo:"Gravada"},
+{d:"2027-03-15",t:"08:10",dur:"36m",title:"16.01 Crimes contra a administração — funcionário público ⭐",disc:"Penal",prof:"Arnaldo França Quaresma Júnior",tipo:"Gravada"},
+{d:"2027-03-15",t:"08:46",dur:"36m",title:"16.02 Crimes contra a administração — particular ⭐",disc:"Penal",prof:"Arnaldo França Quaresma Júnior",tipo:"Gravada"},
+{d:"2027-03-15",t:"09:22",dur:"30m",title:"Resolva questões dos conteúdos de hoje",disc:"Questões"},
+{d:"2027-03-16",t:"18:00",dur:"1h",title:"Direito Processual Civil — Juizados Especiais Cíveis (Lei 9.099/95) e visão geral dos procedimentos especiais",disc:"Processo Civil"},
+{d:"2027-03-16",t:"19:10",dur:"30m",title:"Questões de Processo Civil sobre o tema",disc:"Questões"},
+{d:"2027-03-17",t:"18:00",dur:"1h",title:"Direito Civil — Sucessão testamentária: testamentos e legados",disc:"Civil"},
+{d:"2027-03-17",t:"19:10",dur:"30m",title:"Questões de Direito Civil sobre o tema",disc:"Questões"},
+{d:"2027-03-18",t:"08:00",dur:"45m",title:"17.01 Crimes contra a Administração da Justiça ⭐",disc:"Penal",prof:"Arnaldo França Quaresma Júnior",tipo:"Gravada"},
+{d:"2027-03-18",t:"08:45",dur:"20m",title:"Processo Penal | leitura do material",disc:"Processo Penal",tipo:"Gravada"},
+{d:"2027-03-18",t:"09:05",dur:"8m",title:"15.07 Agravo em Execução Penal ⭐⭐",disc:"Processo Penal",prof:"Letícia Sinatora das Neves",tipo:"Gravada"},
+{d:"2027-03-18",t:"09:13",dur:"6m",title:"15.08 Recurso ordinário constitucional ⭐⭐",disc:"Processo Penal",prof:"Letícia Sinatora das Neves",tipo:"Gravada"},
+{d:"2027-03-18",t:"09:19",dur:"6m",title:"15.09 Recurso Extraordinário e Especial ⭐",disc:"Processo Penal",prof:"Letícia Sinatora das Neves",tipo:"Gravada"},
+{d:"2027-03-18",t:"09:25",dur:"18m",title:"16.01 Revisão Criminal, HC e MS ⭐⭐",disc:"Processo Penal",prof:"Letícia Sinatora das Neves",tipo:"Gravada"},
+{d:"2027-03-18",t:"09:43",dur:"17m",title:"Resolva questões dos conteúdos de hoje",disc:"Questões"},
+{d:"2027-03-19",t:"08:00",dur:"9m",title:"17.01 Nulidades no Processo Penal ⭐",disc:"Processo Penal",prof:"Letícia Sinatora das Neves",tipo:"Gravada"},
+{d:"2027-03-19",t:"08:09",dur:"21m",title:"18.01 LEP: considerações iniciais e individualização da pena ⭐",disc:"Processo Penal",prof:"Letícia Sinatora das Neves",tipo:"Gravada"},
+{d:"2027-03-19",t:"08:30",dur:"27m",title:"18.02 LEP: regimes prisionais e progressão de regime ⭐⭐⭐",disc:"Processo Penal",prof:"Letícia Sinatora das Neves",tipo:"Gravada"},
+{d:"2027-03-19",t:"08:57",dur:"14m",title:"18.03 LEP: regressão de regime e prisão domiciliar ⭐",disc:"Processo Penal",prof:"Letícia Sinatora das Neves",tipo:"Gravada"},
+{d:"2027-03-19",t:"09:11",dur:"7m",title:"18.04 LEP: Remição de Pena ⭐⭐",disc:"Processo Penal",prof:"Letícia Sinatora das Neves",tipo:"Gravada"},
+{d:"2027-03-19",t:"09:18",dur:"7m",title:"18.05 LEP: saídas e monitoramento eletrônico ⭐",disc:"Processo Penal",prof:"Letícia Sinatora das Neves",tipo:"Gravada"},
+{d:"2027-03-19",t:"09:25",dur:"10m",title:"18.06 LEP: RDD, incidentes e limite de cumprimento ⭐",disc:"Processo Penal",prof:"Letícia Sinatora das Neves",tipo:"Gravada"},
+{d:"2027-03-19",t:"09:35",dur:"7m",title:"18.07 LEP: Graça, Indulto e Comutação de Pena ⭐",disc:"Processo Penal",prof:"Letícia Sinatora das Neves",tipo:"Gravada"},
+{d:"2027-03-19",t:"09:42",dur:"18m",title:"Resolva questões dos conteúdos de hoje",disc:"Questões"},
+{d:"2027-03-20",t:"18:00",dur:"1h",title:"Direito Civil — Inventário, partilha, colação e sonegados",disc:"Civil"},
+{d:"2027-03-20",t:"19:10",dur:"30m",title:"Questões de Direito Civil sobre o tema",disc:"Questões"},
+{d:"2027-03-21",t:"09:00",dur:"1m",title:"Descanso — sem estudo hoje",disc:"Revisão"},
+{d:"2027-03-22",t:"18:00",dur:"1h",title:"Revisão de Civil + questões: Parte Geral (LINDB, pessoas, bens, negócio jurídico, prescrição)",disc:"Civil"},
+{d:"2027-03-22",t:"19:10",dur:"30m",title:"Questões de Civil (caderno de erros)",disc:"Questões"},
+{d:"2027-03-23",t:"18:00",dur:"1h",title:"Revisão de Civil + questões: Obrigações",disc:"Civil"},
+{d:"2027-03-23",t:"19:10",dur:"30m",title:"Questões de Civil (caderno de erros)",disc:"Questões"},
+{d:"2027-03-24",t:"18:00",dur:"1h",title:"Revisão de Civil + questões: Contratos e responsabilidade civil",disc:"Civil"},
+{d:"2027-03-24",t:"19:10",dur:"30m",title:"Questões de Civil (caderno de erros)",disc:"Questões"},
+{d:"2027-03-25",t:"18:00",dur:"1h",title:"Revisão de Civil + questões: Direito das Coisas",disc:"Civil"},
+{d:"2027-03-25",t:"19:10",dur:"30m",title:"Questões de Civil (caderno de erros)",disc:"Questões"},
+{d:"2027-03-26",t:"18:00",dur:"1h",title:"Revisão de Civil + questões: Família",disc:"Civil"},
+{d:"2027-03-26",t:"19:10",dur:"30m",title:"Questões de Civil (caderno de erros)",disc:"Questões"},
+{d:"2027-03-27",t:"09:00",dur:"45m",title:"Revisão da semana: mapas mentais e releitura de conteúdos da semana",disc:"Revisão"},
+{d:"2027-03-27",t:"09:50",dur:"45m",title:"Questões dos temas da semana + caderno de erros",disc:"Questões"},
+{d:"2027-03-28",t:"09:00",dur:"1m",title:"Descanso — sem estudo hoje",disc:"Revisão"},
+{d:"2027-03-29",t:"18:00",dur:"1h",title:"Revisão de Civil + questões: Sucessões",disc:"Civil"},
+{d:"2027-03-29",t:"19:10",dur:"30m",title:"Questões de Civil (caderno de erros)",disc:"Questões"},
+{d:"2027-03-30",t:"09:00",dur:"1h",title:"Revisão final: Ética (mapas mentais + pontos ⭐⭐⭐)",disc:"Revisão"},
+{d:"2027-03-30",t:"10:10",dur:"40m",title:"Questões de Ética",disc:"Questões"},
+{d:"2027-03-31",t:"09:00",dur:"1h",title:"Revisão final: Constitucional (mapas mentais + pontos ⭐⭐⭐)",disc:"Revisão"},
+{d:"2027-03-31",t:"10:10",dur:"40m",title:"Questões de Constitucional",disc:"Questões"},
+{d:"2027-04-01",t:"09:00",dur:"1h",title:"Revisão final: Trabalho (mapas mentais + pontos ⭐⭐⭐)",disc:"Revisão"},
+{d:"2027-04-01",t:"10:10",dur:"40m",title:"Questões de Trabalho",disc:"Questões"},
+{d:"2027-04-02",t:"09:00",dur:"1h",title:"Revisão final: Tributário (mapas mentais + pontos ⭐⭐⭐)",disc:"Revisão"},
+{d:"2027-04-02",t:"10:10",dur:"40m",title:"Questões de Tributário",disc:"Questões"},
+{d:"2027-04-03",t:"09:00",dur:"1h",title:"Revisão final: Penal (mapas mentais + pontos ⭐⭐⭐)",disc:"Revisão"},
+{d:"2027-04-03",t:"10:10",dur:"40m",title:"Questões de Penal",disc:"Questões"},
+{d:"2027-04-04",t:"09:00",dur:"1m",title:"Descanso — sem estudo hoje",disc:"Revisão"},
+{d:"2027-04-05",t:"09:00",dur:"1h",title:"Revisão final: Processo Penal (mapas mentais + pontos ⭐⭐⭐)",disc:"Revisão"},
+{d:"2027-04-05",t:"10:10",dur:"40m",title:"Questões de Processo Penal",disc:"Questões"},
+{d:"2027-04-06",t:"09:00",dur:"1h",title:"Revisão final: Processo do Trabalho (mapas mentais + pontos ⭐⭐⭐)",disc:"Revisão"},
+{d:"2027-04-06",t:"10:10",dur:"40m",title:"Questões de Processo do Trabalho",disc:"Questões"},
+{d:"2027-04-07",t:"09:00",dur:"1h",title:"Revisão final: Processo Civil (mapas mentais + pontos ⭐⭐⭐)",disc:"Revisão"},
+{d:"2027-04-07",t:"10:10",dur:"40m",title:"Questões de Processo Civil",disc:"Questões"}
+];
+
+EVENTS.forEach((e,i)=>e.id="ev"+i);
+
+const DISC_COLORS = {
+  "Metodologia":{bg:"var(--grey-soft)",fg:"var(--grey)"},
+  "Mentoria":{bg:"var(--gold-soft)",fg:"var(--gold)"},
+  "Ética":{bg:"var(--purple-soft)",fg:"var(--purple)"},
+  "Constitucional":{bg:"var(--blue-soft)",fg:"var(--blue)"},
+  "Trabalho":{bg:"var(--teal-soft)",fg:"var(--teal)"},
+  "Tributário":{bg:"var(--green-soft)",fg:"var(--green)"},
+  "Penal":{bg:"var(--red-soft)",fg:"var(--red)"},
+  "Processo Penal":{bg:"var(--red-soft)",fg:"var(--red)"},
+  "Processo do Trabalho":{bg:"var(--teal-soft)",fg:"var(--teal)"},
+  "Civil":{bg:"var(--blue-soft)",fg:"var(--blue)"},
+  "Processo Civil":{bg:"var(--gold-soft)",fg:"var(--gold)"},
+  "Simulado":{bg:"var(--gold-soft)",fg:"var(--gold)"},
+  "Revisão":{bg:"var(--grey-soft)",fg:"var(--grey)"},
+  "Questões":{bg:"var(--grey-soft)",fg:"var(--grey)"}
+};
+
+let done = {};
+try{
+  done = JSON.parse(localStorage.getItem("oab2_redistribuido_done") || "{}");
+}catch(e){ done = {}; }
+
+var saveDone=function(){
+  try{ localStorage.setItem("oab2_redistribuido_done", JSON.stringify(done)); }catch(e){}
+}
+
+const MONTHS = ["Janeiro","Fevereiro","Março","Abril","Maio","Junho","Julho","Agosto","Setembro","Outubro","Novembro","Dezembro"];
+const WEEKDAYS = ["D","S","T","Q","Q","S","S"];
+
+function localToday(){const n=new Date();return n.getFullYear()+"-"+pad(n.getMonth()+1)+"-"+pad(n.getDate());}
+let selectedDate = localToday();
+if(selectedDate<"2026-10-27") selectedDate="2026-10-27";
+if(selectedDate>"2027-04-07") selectedDate="2027-04-07";
+let viewYear = +selectedDate.slice(0,4), viewMonth = +selectedDate.slice(5,7)-1;
+
+function eventsByDate(dateStr){
+  return EVENTS.filter(e=>e.d===dateStr);
+}
+
+function allDisciplines(){
+  const s = new Set(EVENTS.map(e=>e.disc));
+  return Array.from(s);
+}
+
+function renderChips(){
+  const wrap = document.getElementById("disciplineChips");
+  wrap.innerHTML = "";
+  allDisciplines().forEach(disc=>{
+    const evs = EVENTS.filter(e=>e.disc===disc);
+    const doneCount = evs.filter(e=>done[e.id]).length;
+    const c = DISC_COLORS[disc] || {bg:"var(--grey-soft)",fg:"var(--grey)"};
+    const chip = document.createElement("span");
+    chip.className = "chip";
+    chip.style.background = c.bg;
+    chip.style.color = c.fg;
+    chip.style.borderColor = "transparent";
+    chip.textContent = disc + " " + doneCount + "/" + evs.length;
+    wrap.appendChild(chip);
+  });
+}
+
+function renderProgress(){
+  const total = EVENTS.length;
+  const doneCount = EVENTS.filter(e=>done[e.id]).length;
+  const pct = total ? Math.round((doneCount/total)*100) : 0;
+  document.getElementById("progressPct").textContent = pct + "%";
+  document.getElementById("progressLabel").textContent = doneCount + " de " + total + " atividades concluídas";
+  document.getElementById("progressBar").style.width = pct + "%";
+  renderChips();
+}
+
+function populateFilter(){
+  const sel = document.getElementById("filterDisciplina");
+  sel.innerHTML = '<option value="">Todas as matérias</option>';
+  allDisciplines().forEach(d=>{
+    const o = document.createElement("option");
+    o.value = d; o.textContent = d;
+    sel.appendChild(o);
+  });
+}
+
+function pad(n){return n<10?"0"+n:""+n;}
+
+function renderCalendar(){
+  document.getElementById("monthTitle").textContent = MONTHS[viewMonth] + " " + viewYear;
+  const cal = document.getElementById("calendar");
+  cal.innerHTML = "";
+  WEEKDAYS.forEach(w=>{
+    const el = document.createElement("div");
+    el.className="wd"; el.textContent=w;
+    cal.appendChild(el);
+  });
+  const firstDay = new Date(viewYear, viewMonth, 1).getDay();
+  const daysInMonth = new Date(viewYear, viewMonth+1, 0).getDate();
+  const todayStr = localToday();
+
+  for(let i=0;i<firstDay;i++){
+    const el = document.createElement("div");
+    el.className="day empty";
+    cal.appendChild(el);
+  }
+  for(let day=1; day<=daysInMonth; day++){
+    const dateStr = viewYear+"-"+pad(viewMonth+1)+"-"+pad(day);
+    const evs = eventsByDate(dateStr);
+    const el = document.createElement("div");
+    el.className = "day" + (dateStr===todayStr ? " today":"") + (dateStr===selectedDate ? " selected":"");
+    const num = document.createElement("div");
+    num.className="num"; num.textContent=day;
+    el.appendChild(num);
+    if(evs.length){
+      const dotsWrap = document.createElement("div");
+      dotsWrap.className="dots";
+      const discsToday = Array.from(new Set(evs.map(e=>e.disc))).slice(0,5);
+      discsToday.forEach(disc=>{
+        const dot = document.createElement("span");
+        dot.className="dot";
+        dot.style.background = (DISC_COLORS[disc]||{fg:"var(--grey)"}).fg;
+        dotsWrap.appendChild(dot);
+      });
+      el.appendChild(dotsWrap);
+      const allDone = evs.every(e=>done[e.id]);
+      if(allDone){
+        const badge = document.createElement("div");
+        badge.className="done-badge";
+        badge.textContent="✓";
+        el.appendChild(badge);
+      }
+    }
+    el.addEventListener("click", ()=>{ selectedDate = dateStr; renderCalendar(); renderDayPanel(); });
+    cal.appendChild(el);
+  }
+}
+
+function renderDayPanel(){
+  const panel = document.getElementById("dayPanel");
+  const search = document.getElementById("search").value.trim().toLowerCase();
+  const filterDisc = document.getElementById("filterDisciplina").value;
+
+  let evs = eventsByDate(selectedDate);
+  if(filterDisc) evs = evs.filter(e=>e.disc===filterDisc);
+  if(search) evs = evs.filter(e =>
+    e.title.toLowerCase().includes(search) ||
+    (e.prof||"").toLowerCase().includes(search) ||
+    e.disc.toLowerCase().includes(search)
+  );
+
+  const dateObj = new Date(selectedDate+"T00:00:00");
+  const label = dateObj.toLocaleDateString("pt-BR", {weekday:'long', day:'numeric', month:'long'});
+
+  panel.innerHTML = "";
+  const h2 = document.createElement("h2");
+  const durMin=x=>{const m=/^(\d+)h(\d+)?$/.exec(x);return m?(+m[1])*60+(+(m[2]||0)):parseInt(x)||0;};
+  const totMin=eventsByDate(selectedDate).filter(e=>e.disc!=="Simulado"&&e.disc!=="Mentoria"&&e.dur!=="1m").reduce((a,e)=>a+durMin(e.dur),0);
+  h2.textContent = label.charAt(0).toUpperCase()+label.slice(1)+(totMin?" · "+Math.floor(totMin/60)+"h"+String(totMin%60).padStart(2,"0"):" · descanso");
+  panel.appendChild(h2);
+
+  if(!evs.length){
+    const empty = document.createElement("div");
+    empty.className="empty-state";
+    empty.textContent = "Nenhuma atividade encontrada para este dia.";
+    panel.appendChild(empty);
+    return;
+  }
+
+  evs.sort((a,b)=>a.t.localeCompare(b.t));
+  evs.forEach(e=>{
+    const isDone = !!done[e.id];
+    const c = DISC_COLORS[e.disc] || {bg:"var(--grey-soft)",fg:"var(--grey)"};
+    const row = document.createElement("div");
+    row.className = "event" + (isDone?" done":"");
+    const cb = document.createElement("input");
+    cb.type="checkbox"; cb.checked = isDone;
+    cb.addEventListener("change", ()=>{
+      if(cb.checked){ done[e.id]=true; } else { delete done[e.id]; }
+      saveDone(); renderProgress(); renderCalendar(); renderDayPanel();
+    });
+    row.appendChild(cb);
+    const body = document.createElement("div");
+    body.className="event-body";
+    const title = document.createElement("div");
+    title.className="event-title";
+    title.textContent = e.title;
+    body.appendChild(title);
+    const meta = document.createElement("div");
+    meta.className="event-meta";
+    const tag = document.createElement("span");
+    tag.className="tag";
+    tag.style.background=c.bg; tag.style.color=c.fg;
+    tag.textContent = e.disc;
+    meta.appendChild(tag);
+    const metaText = document.createElement("span");
+    metaText.className="meta-text";
+    let txt = e.t + " · " + e.dur;
+    if(e.prof) txt += " · " + e.prof;
+    if(e.tipo) txt += " · " + e.tipo;
+    metaText.textContent = txt;
+    meta.appendChild(metaText);
+    body.appendChild(meta);
+    row.appendChild(body);
+    panel.appendChild(row);
+  });
+}
+
+document.getElementById("prevMonth").addEventListener("click", ()=>{
+  viewMonth--; if(viewMonth<0){viewMonth=11; viewYear--;}
+  renderCalendar();
+});
+document.getElementById("nextMonth").addEventListener("click", ()=>{
+  viewMonth++; if(viewMonth>11){viewMonth=0; viewYear++;}
+  renderCalendar();
+});
+document.getElementById("search").addEventListener("input", renderDayPanel);
+document.getElementById("filterDisciplina").addEventListener("change", renderDayPanel);
+
+populateFilter();
+renderProgress();
+renderCalendar();
+renderDayPanel();
+
+const MATS=['Ética','Constitucional','Trabalho','Tributário','Penal','Processo Penal','Processo do Trabalho','Civil','Processo Civil'];
+const ld=(k,d)=>{try{return JSON.parse(localStorage.getItem(k))||d}catch(e){return d}};
+const sv=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}};
+const $=id=>document.getElementById(id);
+function mk(t,c,x){const e=document.createElement(t);if(c)e.className=c;if(x!=null)e.textContent=x;return e;}
+function plus(n){const d=new Date();d.setDate(d.getDate()+n);return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());}
+['mE','mC','mP','fE','mG'].forEach(id=>{const s=$(id);if(id==='fE'){s.appendChild(new Option('Todas as matérias',''));}MATS.forEach(m=>s.appendChild(new Option(m,m)));});
+document.querySelectorAll('.tabbtn').forEach(b=>b.addEventListener('click',()=>{document.querySelectorAll('.tabbtn').forEach(x=>x.classList.toggle('on',x===b));['cron','erros','cards','perf','gen','mat'].forEach(t=>$('tab-'+t).hidden=(t!==b.dataset.t));}));
+
+let erros=ld('oab2_erros',[]);
+function rErros(){const box=$('listE');box.innerHTML='';const f=$('fE').value;erros.filter(x=>!f||x.m===f).slice().reverse().forEach(x=>{const r=mk('div','event');const b=mk('div','event-body');b.appendChild(mk('div','event-title',x.t||'(sem tema)'));b.appendChild(mk('div','meta-text',x.m+' · '+x.w+' · '+x.d));if(x.r)b.appendChild(mk('div','meta-text','Regra certa: '+x.r));r.appendChild(b);const del=mk('button','mini','✕');del.addEventListener('click',()=>{erros=erros.filter(y=>y!==x);sv('oab2_erros',erros);rErros();});r.appendChild(del);box.appendChild(r);});if(!box.children.length)box.appendChild(mk('div','empty-state','Nenhum erro registrado ainda.'));}
+$('addE').addEventListener('click',()=>{if(!$('tE').value.trim()&&!$('rE').value.trim())return;erros.push({m:$('mE').value,t:$('tE').value.trim(),w:$('wE').value,r:$('rE').value.trim(),d:new Date().toLocaleDateString('pt-BR')});sv('oab2_erros',erros);$('tE').value='';$('rE').value='';rErros();});
+$('fE').addEventListener('change',rErros);
+
+let cards=ld('oab2_cards',[]);
+const INT=[1,7,30,90];
+function rCards(){const due=cards.filter(c=>c.due<=localToday());const area=$('revC');area.innerHTML='';$('cntC').textContent=cards.length+' cartões · '+due.length+' para revisar hoje';if(!due.length){area.appendChild(mk('div','empty-state',cards.length?'Nada para revisar hoje. 🎉':'Crie seu primeiro cartão acima.'));return;}const c=due[0];const card=mk('div','event');const b=mk('div','event-body');b.appendChild(mk('div','meta-text',c.m));b.appendChild(mk('div','event-title',c.f));const ans=mk('div','event-title',c.v);ans.hidden=true;ans.style.marginTop='8px';b.appendChild(ans);card.appendChild(b);area.appendChild(card);const row=mk('div','row');const show=mk('button','btn','Mostrar resposta');const ok=mk('button','btn','Acertei');const no=mk('button','btn','Errei');const del=mk('button','mini','Excluir cartão');ok.hidden=no.hidden=true;show.addEventListener('click',()=>{ans.hidden=false;show.hidden=true;ok.hidden=no.hidden=false;});ok.addEventListener('click',()=>{c.s=Math.min((c.s||0)+1,INT.length-1);c.due=plus(INT[c.s]);sv('oab2_cards',cards);rCards();});no.addEventListener('click',()=>{c.s=0;c.due=plus(1);sv('oab2_cards',cards);rCards();});del.addEventListener('click',()=>{cards=cards.filter(x=>x!==c);sv('oab2_cards',cards);rCards();});row.append(show,ok,no,del);area.appendChild(row);}
+$('addC').addEventListener('click',()=>{if(!$('fC').value.trim()||!$('vC').value.trim())return;cards.push({m:$('mC').value,f:$('fC').value.trim(),v:$('vC').value.trim(),s:0,due:localToday()});sv('oab2_cards',cards);$('fC').value='';$('vC').value='';rCards();});
+
+let perf=ld('oab2_perf',[]);
+function rPerf(){const box=$('listP');box.innerHTML='';const ag={};perf.forEach(p=>{const a=ag[p.m]||(ag[p.m]={n:0,a:0});a.n+=p.n;a.a+=p.a;});const tn=perf.reduce((s,p)=>s+p.n,0),ta=perf.reduce((s,p)=>s+p.a,0);const rows=Object.keys(ag).map(m=>[m,ag[m].n,ag[m].a]);if(tn)rows.push(['Total',tn,ta]);rows.forEach(([m,n,a])=>{const pc=Math.round(a/n*100);const w=mk('div','pr');const t=mk('div','meta-text');t.appendChild(mk('span','',m+' — '+a+'/'+n));t.appendChild(mk('span','',pc+'%'));w.appendChild(t);const tr=mk('div','bar-track');const f=mk('div','bar-fill');f.style.width=pc+'%';tr.appendChild(f);w.appendChild(tr);box.appendChild(w);});if(!rows.length)box.appendChild(mk('div','empty-state','Registre suas sessões de questões para ver o desempenho por matéria.'));}
+$('addP').addEventListener('click',()=>{const n=parseInt($('nP').value),a=parseInt($('aP').value);if(!(n>0)||!(a>=0)||a>n)return;perf.push({m:$('mP').value,n:n,a:a,d:localToday()});sv('oab2_perf',perf);$('nP').value='';$('aP').value='';rPerf();});
+$('undoP').addEventListener('click',()=>{perf.pop();sv('oab2_perf',perf);rPerf();});
+let smp=null;
+(async()=>{try{smp=await claude.use('sample');}catch(e){smp=null;}if(!smp){$('genMsg').textContent='A geração de questões não está disponível nesta visualização.';}else{$('goG').disabled=false;}})();
+function rGen(qs,m){const box=$('listG');box.innerHTML='';qs.forEach((q,qi)=>{const c=mk('div','event');const b=mk('div','event-body');b.appendChild(mk('div','event-title',(qi+1)+'. '+q.enunciado));const fb=mk('div','meta-text','');fb.style.marginTop='8px';let done=false;const btns=[];q.alternativas.forEach((a,i)=>{const o=mk('button','opt','ABCD'[i]+') '+a);btns.push(o);o.addEventListener('click',()=>{if(done)return;done=true;const ok=i===q.correta;btns[q.correta].style.background='var(--green-soft)';if(!ok)o.style.background='var(--red-soft)';fb.textContent=(ok?'Correta. ':'Errada. Correta: '+'ABCD'[q.correta]+'. ')+(q.comentario||'');perf.push({m:m+' (IA)',n:1,a:ok?1:0,d:localToday()});sv('oab2_perf',perf);rPerf();});b.appendChild(o);});b.appendChild(fb);c.appendChild(b);box.appendChild(c);});}
+$('goG').addEventListener('click',async()=>{if(!smp)return;const m=$('mG').value,t=$('tG').value.trim(),n=parseInt($('nG').value);const msg=$('genMsg');msg.textContent='Gerando questões…';$('listG').innerHTML='';const pr='Você elabora questões da 1ª fase do Exame de Ordem da OAB (banca FGV). Crie '+n+' questões de múltipla escolha de '+m+(t?', sobre o tema: '+t:'')+'. Cada uma com enunciado em situação-problema curta, 4 alternativas plausíveis (uma única correta), nível médio, pegadinhas típicas da FGV. Use apenas legislação e jurisprudência que você tem certeza de que estão vigentes; no comentário explique a correta citando o fundamento legal, e não cite número de artigo se não tiver certeza. Responda somente um JSON no formato [{"enunciado":"","alternativas":["","","",""],"correta":0,"comentario":""}], com correta sendo o índice de 0 a 3.';try{const q=await smp.json(pr);if(!Array.isArray(q)||!q.length)throw {code:'formato'};rGen(q.filter(x=>x&&Array.isArray(x.alternativas)&&x.alternativas.length===4&&x.correta>=0&&x.correta<4),m);msg.textContent='Questões estilo FGV geradas por IA, não oficiais. Confira o comentário na lei.';}catch(e){msg.textContent='Não consegui gerar agora ('+((e&&e.code)||'erro')+'). Tente de novo em instantes.';}});
+rErros();rCards();rPerf();
+function goTo(d){selectedDate=d;viewYear=+d.slice(0,4);viewMonth=+d.slice(5,7)-1;renderCalendar();renderDayPanel();const p=document.getElementById("dayPanel");if(p&&p.scrollIntoView)p.scrollIntoView({behavior:"smooth",block:"start"});}
+function nextUndone(){return EVENTS.slice().sort((a,b)=>(a.d+a.t).localeCompare(b.d+b.t)).find(e=>!done[e.id]&&!/^Descanso/.test(e.title));}
+function renderResume(){
+  const box=$('resumeCard');box.innerHTML='';
+  const e=nextUndone();
+  if(!e){box.appendChild(mk('div','t','🎉 Cronograma completo! Parabéns pela jornada.'));return;}
+  box.appendChild(mk('div','k','Continuar de onde parei'));
+  box.appendChild(mk('div','t',e.title));
+  const dt=new Date(e.d+'T00:00:00').toLocaleDateString('pt-BR',{weekday:'short',day:'numeric',month:'short'});
+  box.appendChild(mk('div','m',dt+' · '+e.t+' · '+e.dur+' · '+e.disc));
+  const b=mk('button','btn','Abrir esta atividade');b.addEventListener('click',()=>goTo(e.d));box.appendChild(b);
+}
+$('goToday').addEventListener('click',()=>goTo(localToday()));
+const _sd=saveDone;saveDone=function(){_sd();renderResume();};
+$('markUpTo').addEventListener('click',()=>{const v=$('upTo').value;if(!v)return;EVENTS.forEach(e=>{if(e.d<=v)done[e.id]=true;});_sd();renderProgress();renderCalendar();renderDayPanel();renderResume();$('bkMsg').textContent='Marcado tudo até '+v.split('-').reverse().join('/')+'.';});
+$('bkMake').addEventListener('click',()=>{$('bk').value=JSON.stringify({done:done,erros:erros,cards:cards,perf:perf});$('bkMsg').textContent='Backup gerado. Selecione e copie o texto acima.';$('bk').select();});
+$('bkLoad').addEventListener('click',()=>{try{const o=JSON.parse($('bk').value);if(o.done){done=o.done;_sd();}if(o.erros){erros=o.erros;sv('oab2_erros',erros);}if(o.cards){cards=o.cards;sv('oab2_cards',cards);}if(o.perf){perf=o.perf;sv('oab2_perf',perf);}renderProgress();renderCalendar();renderDayPanel();renderResume();rErros();rCards();rPerf();$('bkMsg').textContent='Backup restaurado.';}catch(err){$('bkMsg').textContent='Texto de backup inválido.';}});
+
+(function(){
+  var KEY="oab2_drive";
+  function getId(t){t=(t||"").trim();var m=t.match(/folders\/([A-Za-z0-9_-]{10,})/)||t.match(/[?&]id=([A-Za-z0-9_-]{10,})/);if(m)return m[1];return /^[A-Za-z0-9_-]{20,}$/.test(t)?t:"";}
+  function show(){
+    var id="";try{id=localStorage.getItem(KEY)||"";}catch(e){}
+    $("matSetup").hidden=!!id;$("matView").hidden=!id;
+    if(!id)return;
+    $("matOpen").href="https://drive.google.com/drive/folders/"+id;
+    $("matOff").hidden=navigator.onLine;
+    var f=$("matFrame"),u="https://drive.google.com/embeddedfolderview?id="+id+"#list";
+    if(f.getAttribute("src")!==u)f.setAttribute("src",u);
+  }
+  $("matSave").addEventListener("click",function(){
+    var id=getId($("matLink").value);
+    if(!id){$("matMsg").textContent="Link inválido. Copie o link da pasta no Drive (Compartilhar > Copiar link).";return;}
+    try{localStorage.setItem(KEY,id);}catch(e){}
+    $("matMsg").textContent="";show();
+  });
+  $("matChange").addEventListener("click",function(){try{localStorage.removeItem(KEY);}catch(e){}$("matFrame").removeAttribute("src");$("matLink").value="";show();});
+  document.querySelectorAll(".tabbtn").forEach(function(b){b.addEventListener("click",function(){if(b.dataset.t==="mat")show();});});
+})();
+document.querySelectorAll('.tabbtn').forEach(b=>b.addEventListener('click',()=>window.scrollTo(0,0)));
+renderResume();
+</script>
+<script>
+if("serviceWorker" in navigator){window.addEventListener("load",function(){navigator.serviceWorker.register("sw.js").catch(function(){});});}
+</script>
+</body>
+</html>
