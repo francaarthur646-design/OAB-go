@@ -22,7 +22,8 @@ var MATS=[
 ['Eleitoral',/eleitoral/],
 ['Internacional',/internacional/],
 ['Filosofia do Direito',/filosofia/],
-['Previdenciário',/previdenci/]];
+['Previdenciário',/previdenci/],
+['Financeiro',/financeiro/]];
 var MN=MATS.map(function(m){return m[0]}).concat('Sem matéria');
 function mt(s){var n=norm(s);for(var i=0;i<MATS.length;i++)if(MATS[i][1].test(n))return MATS[i][0];return 'Sem matéria'}
 function tp(s){var n=norm(s);if(/simulad/.test(n))return 'Simulado';if(/mapa/.test(n))return 'Mapa mental';if(/questo|questao|banco/.test(n))return 'Questões';if(/apostila|material|resumo/.test(n))return 'Apostila';return ''}
