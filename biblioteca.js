@@ -22,7 +22,7 @@ var MATS=[
 ['Eleitoral',/eleitoral/],
 ['Internacional',/internacional/],
 ['Filosofia do Direito',/filosofia/],
-['Previdenciário',/previdenci/]];
+['Previdenciário',/previdenci/],
 ['Previdenciário',/previdenci/],
 ['Financeiro',/financeiro/],
 ['CEISC',/CESIC/],
