@@ -57,8 +57,13 @@ function pick(dir){
       var p=f.webkitRelativePath||f.name,m=mt(f.name);
       if(m==='Sem matéria')m=mt(p);
 var t=tp(f.name)||tp(p)||'Apostila';
-if(t==='Simulado'){var n=norm(p);m=/ceisc|autoral/.test(n)?'CEISC':/oab|fgv|exame/.test(n)?'OAB':'Sem matéria'}
-return{f:f,tipo:t,materia:m};    });
+
+if(t==='Simulado'){
+    var n=norm(p);
+    m=/ceisc|autoral/.test(n)?'CEISC':/oab|fgv|exame/.test(n)?'OAB':'Sem matéria';
+}
+
+return{f:f,tipo:t,materia:m};
     render();
   };
   i.click();
@@ -83,8 +88,24 @@ function review(){
   pend.forEach(function(p){
     var row=el('div','event'),bd=el('div','event-body'),a=el('div','fr');
     bd.appendChild(el('div','event-title',p.f.name));
-    a.appendChild(sel(['Apostila','Mapa mental','Questões','Simulado'],p.tipo,function(v){p.tipo=v}));
-    a.appendChild(sel(MN,p.materia,function(v){p.materia=v}));
+    
+var tipoSel=sel(['Apostila','Mapa mental','Questões','Simulado'],p.tipo,function(v){
+    p.tipo=v;
+    var opcoes=v==='Simulado'?['CEISC','OAB','Sem matéria']:MN;
+    var atual=opcoes.indexOf(p.materia)>=0?p.materia:(opcoes.indexOf('Sem matéria')>=0?'Sem matéria':opcoes[0]);
+    p.materia=atual;
+    materiaSel.innerHTML='';
+    opcoes.forEach(function(o){materiaSel.appendChild(new Option(o,o))});
+    materiaSel.value=atual;
+});
+
+var materiaSel=sel(p.tipo==='Simulado'?['CEISC','OAB','Sem matéria']:MN,p.materia,function(v){
+    p.materia=v;
+});
+
+a.appendChild(tipoSel);
+a.appendChild(materiaSel);
+
     bd.appendChild(a);row.appendChild(bd);box.appendChild(row);
   });
   var r=el('div','row'),ok=el('button','btn','Salvar no aparelho'),no=el('button','btn','Cancelar');
@@ -98,10 +119,12 @@ function drawList(){
   var rs=recs.filter(function(r){return tipos.indexOf(r.tipo)>=0&&(!q||norm(r.name).indexOf(norm(q))>=0)});
   if(!rs.length){lst.appendChild(el('div','empty-state','Nenhum arquivo aqui ainda. Use os botões de importar.'));return}
   var g={};
-  rs.forEach(function(r){var k=r.materia;;(g[k]=g[k]||[]).push(r)});
-  Object.keys(g).sort(function(a,b){return a.localeCompare(b,'pt')}).forEach(function(k){
+rs.forEach(function(r){
+    var k=r.materia;
+    (g[k]=g[k]||[]).push(r);
+});  Object.keys(g).sort(function(a,b){return a.localeCompare(b,'pt')}).forEach(function(k){
     var d=document.createElement('details');d.className='tools';d.style.marginTop='10px';
-    if(q||seg==='Simulados')d.open=true;
+    if(q||seg==='Simulado')d.open=true;
     d.appendChild(el('summary','',k+' ('+g[k].length+')'));
     g[k].sort(function(a,b){return a.tipo.localeCompare(b.tipo)||a.name.localeCompare(b.name,'pt',{numeric:true})}).forEach(function(r){
       var row=el('div','event'),bd=el('div','event-body'),a=el('div','fr');
