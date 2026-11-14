@@ -23,10 +23,9 @@ var MATS=[
 ['Internacional',/internacional/],
 ['Filosofia do Direito',/filosofia/],
 ['Previdenciário',/previdenci/],
-['Previdenciário',/previdenci/],
 ['Financeiro',/financeiro/],
-['CEISC',/CESIC/],
-['OAB',/OAB/]];
+['CEISC',/ceisc/],
+['OAB',/oab/]];
 var MN=MATS.map(function(m){return m[0]}).concat('Sem matéria');
 function mt(s){var n=norm(s);for(var i=0;i<MATS.length;i++)if(MATS[i][1].test(n))return MATS[i][0];return 'Sem matéria'}
 function tp(s){var n=norm(s);if(/simulad/.test(n))return 'Simulado';if(/mapa/.test(n))return 'Mapa mental';if(/questo|questao|banco/.test(n))return 'Questões';if(/apostila|material|resumo/.test(n))return 'Apostila';return ''}
@@ -100,8 +99,10 @@ var tipos=seg==='Materiais'?['Apostila','Mapa mental']:seg==='Questões'?['Quest
 var rs=recs.filter(function(r){return tipos.indexOf(r.tipo)>=0&&(!q||norm(r.name).indexOf(norm(q))>=0)});
 if(!rs.length){lst.appendChild(el('div','empty-state','Nenhum arquivo aqui ainda. Use os botões de importar.'));return}
 var g={};
-rs.forEach(function(r){var k=seg==='Simulados'?'Simulados':r.materia;(g[k]=g[k]||[]).push(r)});
-Object.keys(g).sort(function(a,b){return a.localeCompare(b,'pt')}).forEach(function(k){
+rs.forEach(function(r){
+  var k=r.materia||'Sem matéria';
+  (g[k]=g[k]||[]).push(r);
+});Object.keys(g).sort(function(a,b){return a.localeCompare(b,'pt')}).forEach(function(k){
 var d=document.createElement('details');d.className='tools';d.style.marginTop='10px';
 if(q||seg==='Simulados')d.open=true;
 d.appendChild(el('summary','',k+' ('+g[k].length+')'));
