@@ -23,7 +23,6 @@ var MATS=[
 ['Internacional',/internacional/],
 ['Filosofia do Direito',/filosofia/],
 ['Previdenciário',/previdenci/],
-['Previdenciário',/previdenci/],
 ['Financeiro',/financeiro/],
 ['CEISC',/CESIC/],
 ['OAB',/OAB/]];
