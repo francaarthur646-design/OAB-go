@@ -48,8 +48,161 @@ function load(){
 var o=[],c=db.transaction('f').objectStore('f').openCursor();
 c.onsuccess=function(){var x=c.result;if(x){o.push(x.value);x.continue()}else{recs=o;render()}};
 }
-function del(id){var t=db.transaction('f','readwrite');t.objectStore('f').delete(id);t.oncomplete=load}
 
+function exportBackup(){
+  var btn=event.currentTarget;
+  btn.disabled=true;
+  btn.textContent='Preparando backup...';
+
+  var records=recs.slice();
+
+  Promise.all(records.map(function(r){
+    return new Promise(function(resolve,reject){
+      var reader=new FileReader();
+
+      reader.onload=function(){
+        resolve({
+          name:r.name,
+          size:r.size,
+          type:r.type,
+          tipo:r.tipo,
+          materia:r.materia,
+          added:r.added,
+          data:reader.result
+        });
+      };
+
+      reader.onerror=reject;
+      reader.readAsDataURL(r.blob);
+    });
+  })).then(function(files){
+
+    var backup={
+      app:'ROTA_OAB',
+      version:1,
+      createdAt:new Date().toISOString(),
+      total:files.length,
+      records:files
+    };
+
+    var blob=new Blob(
+      [JSON.stringify(backup)],
+      {type:'application/json'}
+    );
+
+    var url=URL.createObjectURL(blob);
+    var a=document.createElement('a');
+
+    a.href=url;
+    a.download='backup-rota-oab-'+
+      new Date().toISOString().slice(0,10)+'.json';
+
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+
+    URL.revokeObjectURL(url);
+
+    btn.disabled=false;
+    btn.textContent='⬇ Exportar backup';
+
+    alert('Backup exportado com sucesso!');
+
+  }).catch(function(err){
+    console.error(err);
+    btn.disabled=false;
+    btn.textContent='⬇ Exportar backup';
+    alert('Erro ao gerar backup.');
+  });
+}
+
+function importBackup(file){
+  if(!file)return;
+
+  var reader=new FileReader();
+
+  reader.onload=function(){
+    try{
+      var backup=JSON.parse(reader.result);
+
+      if(
+        backup.app!=='ROTA_OAB' ||
+        backup.version!==1 ||
+        !Array.isArray(backup.records)
+      ){
+        throw new Error('Arquivo de backup inválido.');
+      }
+
+      if(!confirm(
+        'Foram encontrados '+backup.records.length+
+        ' documentos. Deseja restaurar a biblioteca? '+
+        'Os documentos existentes serão preservados.'
+      ))return;
+
+      var existing={};
+
+      recs.forEach(function(r){
+        existing[r.name+'|'+r.size+'|'+r.tipo+'|'+r.materia]=true;
+      });
+
+      var items=backup.records.filter(function(r){
+        var k=r.name+'|'+r.size+'|'+r.tipo+'|'+r.materia;
+
+        if(existing[k])return false;
+        existing[k]=true;
+        return true;
+      });
+
+      var t=db.transaction('f','readwrite');
+      var store=t.objectStore('f');
+
+      items.forEach(function(r){
+        var parts=r.data.split(',');
+        var mime=r.type||'application/octet-stream';
+        var binary=atob(parts[1]);
+        var bytes=new Uint8Array(binary.length);
+
+        for(var i=0;i<binary.length;i++){
+          bytes[i]=binary.charCodeAt(i);
+        }
+
+        var blob=new Blob([bytes],{type:mime});
+
+        store.add({
+          name:r.name,
+          size:r.size,
+          type:r.type,
+          tipo:r.tipo,
+          materia:r.materia,
+          blob:blob,
+          added:r.added||Date.now()
+        });
+      });
+
+      t.oncomplete=function(){
+        alert(
+          'Restauração concluída! '+items.length+
+          ' documento(s) adicionado(s).'
+        );
+        load();
+      };
+
+      t.onerror=function(){
+        alert('Erro ao restaurar. Verifique o espaço disponível.');
+      };
+
+    }catch(err){
+      console.error(err);
+      alert('Não foi possível ler o backup. Verifique se o arquivo é válido.');
+    }
+  };
+
+  reader.onerror=function(){
+    alert('Erro ao ler o arquivo de backup.');
+  };
+
+  reader.readAsText(file);
+}
 function pick(dir){
 var i=document.createElement('input');i.type='file';i.multiple=true;if(dir)i.webkitdirectory=true;
 i.onchange=function(){
