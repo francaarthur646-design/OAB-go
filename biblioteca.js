@@ -280,9 +280,34 @@ var s=el('div','seg');
 var b=el('button','btn'+(n===seg?' on':''),n);b.onclick=function(){seg=n;render()};s.appendChild(b);
 });
 box.appendChild(s);
-var imp=el('div','quick'),b1=el('button','btn','📥 Importar arquivos'),b2=el('button','btn','📂 Importar pasta');
-b1.onclick=function(){pick(false)};b2.onclick=function(){pick(true)};
-imp.appendChild(b1);imp.appendChild(b2);box.appendChild(imp);
+var imp=el('div','quick'),
+b1=el('button','btn','📥 Importar arquivos'),
+b2=el('button','btn','📂 Importar pasta'),
+b3=el('button','btn','⬇ Exportar backup'),
+b4=el('button','btn','⬆ Restaurar backup');
+
+b1.onclick=function(){pick(false)};
+b3.onclick=exportBackup;
+
+b4.onclick=function(){
+  var input=document.createElement('input');
+  input.type='file';
+  input.accept='.json,application/json';
+
+  input.onchange=function(){
+    if(input.files.length){
+      importBackup(input.files[0]);
+    }
+  };
+
+  input.click();
+};
+
+imp.appendChild(b1);
+imp.appendChild(b2);
+imp.appendChild(b3);
+imp.appendChild(b4);
+box.appendChild(imp);
 var inp=el('input');inp.type='text';inp.placeholder='Buscar pelo nome...';inp.value=q;
 inp.style.cssText='width:100%;padding:9px 12px;margin-bottom:6px;border-radius:8px;border:1px solid var(--line);background:var(--panel);color:var(--ink)';
 inp.oninput=function(){q=inp.value;drawList()};
