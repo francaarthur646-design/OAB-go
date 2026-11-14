@@ -56,8 +56,9 @@ function pick(dir){
     pend=fs.map(function(f){
       var p=f.webkitRelativePath||f.name,m=mt(f.name);
       if(m==='Sem matéria')m=mt(p);
-      return{f:f,tipo:tp(f.name)||tp(p)||'Apostila',materia:m};
-    });
+var t=tp(f.name)||tp(p)||'Apostila';
+if(t==='Simulado'){var n=norm(p);m=/ceisc|autoral/.test(n)?'CEISC':/oab|fgv|exame/.test(n)?'OAB':'Sem matéria'}
+return{f:f,tipo:t,materia:m};    });
     render();
   };
   i.click();
@@ -97,7 +98,7 @@ function drawList(){
   var rs=recs.filter(function(r){return tipos.indexOf(r.tipo)>=0&&(!q||norm(r.name).indexOf(norm(q))>=0)});
   if(!rs.length){lst.appendChild(el('div','empty-state','Nenhum arquivo aqui ainda. Use os botões de importar.'));return}
   var g={};
-  rs.forEach(function(r){var k=seg==='Simulados'?'Simulados':r.materia;(g[k]=g[k]||[]).push(r)});
+  rs.forEach(function(r){var k=r.materia;;(g[k]=g[k]||[]).push(r)});
   Object.keys(g).sort(function(a,b){return a.localeCompare(b,'pt')}).forEach(function(k){
     var d=document.createElement('details');d.className='tools';d.style.marginTop='10px';
     if(q||seg==='Simulados')d.open=true;
