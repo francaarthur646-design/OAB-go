@@ -143,7 +143,7 @@ function render(){
   box.innerHTML='';
   if(pend){review();return}
   var s=el('div','seg');
-  ['Materiais','Questões','Simulado'].forEach(function(n){
+  ['Materiais','Questões','Simulados'].forEach(function(n){
     var b=el('button','btn'+(n===seg?' on':''),n);b.onclick=function(){seg=n;render()};s.appendChild(b);
   });
   box.appendChild(s);
